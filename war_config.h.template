@@ -1,0 +1,13 @@
+#pragma once
+
+/* Edit the template file, not the generated header-file.
+*/
+
+#ifndef WAR_CONFIG_H
+#define WAR_CONFIG_H
+
+#cmakedefine WAR_WITH_UNIT_TESTS 1
+
+#cmakedefine WAR_SYSTEM_EOL ${WAR_SYSTEM_EOL}
+
+#endif // WAR_CONFIG_H
