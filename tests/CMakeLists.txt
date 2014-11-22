@@ -1,0 +1,27 @@
+
+project(warlib_unit_tests)
+set(ACTUAL_SOURCES
+    test_tasks.cpp
+    )
+
+set(HEADERS
+	${WARLIB_ROOT_DIR}/include/tasks/WarPipeline.h
+	)
+
+if (WIN32)
+	ADD_MSVC_PRECOMPILED_HEADER(war_tests.h pch.cpp "${ACTUAL_SOURCES}")
+	add_definitions(-DWAR_PCH)
+	set(SOURCES ${ACTUAL_SOURCES} pch.cpp ${HEADERS} ${RESFILES})
+else()
+	set(SOURCES ${ACTUAL_SOURCES})
+endif()
+
+add_definitions(-DBOOST_TEST_DYN_LINK)
+
+add_executable(warlib_unit_tests ${SOURCES})
+target_link_libraries(warlib_unit_tests pthread ${DEFAULT_LIBRARIES} war_log war_tasks
+  boost_unit_test_framework)
+
+
+add_executable(perftests perftests.cpp)
+target_link_libraries(perftests ${DEFAULT_LIBRARIES}  war_log war_tasks)
