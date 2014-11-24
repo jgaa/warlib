@@ -8,8 +8,10 @@
 # C++14 mile-stone.
 #
 
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0)
 project (Warlib)
+
+include(cmake_scripts/boost.cmake)
 
 if (NOT DEFINED WITH_APIDOC)
 	option(WITH_APIDOC "Generate Doxygen documentation")
@@ -60,44 +62,11 @@ if (BOOST_LIBRARY_DIRS)
 	link_directories(${BOOST_LIBRARY_DIRS} )
 endif()
 
-if (WIN32)
-	# Msvc and possible some other Windows-compilers will link
-	# to the correct libraries trough #pragma directives in boost headers.
-else ()
-    set(LIB_BOOST_PROGRAM_OPTIONS boost_program_options)
-    set(LIB_BOOST_SERIALIZATION boost_serialization)
-    set(LIB_BOOST_FILESYSTEM boost_filesystem)
-    set(LIB_BOOST_DATE_TIME boost_date_time)
-    set(LIB_BOOST_IOSTREAMS boost_iostreams)
-    set(LIB_BOOST_SYSTEM boost_system)
-    set(LIB_BOOST_REGEX boost_regex)
-    set(LIB_BOOST_CONTEXT boost_context)
-    set(LIB_BOOST_COROUTINE boost_coroutine)
-    set(LIB_BOOST_CHRONO boost_chrono)
-endif ()
-
-set (BOOST_LIBRARIES
-    ${LIB_BOOST_SYSTEM}
-    ${LIB_BOOST_PROGRAM_OPTIONS}
-    ${LIB_BOOST_SERIALIZATION}
-    ${LIB_BOOST_FILESYSTEM}
-    ${LIB_BOOST_DATE_TIME}
-    ${LIB_BOOST_IOSTREAMS}
-    ${LIB_BOOST_REGEX}
-    ${LIB_BOOST_CONTEXT}
-    ${LIB_BOOST_COROUTINE}
-    ${LIB_BOOST_CHRONO}
-    )
-
-set (DEFAULT_LIBRARIES pthread ${BOOST_LIBRARIES})
-
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib CACHE PATH "Destination location")
 link_directories(${LIBRARY_OUTPUT_PATH})
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin/${CMAKE_BUILD_TYPE} CACHE PATH "Destination location")
 
 include_directories(
 	${PROJECT_SOURCE_DIR}/include
-#${PROJECT_SOURCE_DIR}/externals/pugixml/src
 	)
 
 add_subdirectory(src)
@@ -106,26 +75,6 @@ if (WAR_WITH_UNIT_TESTS)
 	add_subdirectory(tests)
 endif()
 
-if (WITH_APIDOC)
-    find_package(Doxygen)
-    if (DOXYGEN_FOUND)
-
-        set(DOXYGEN_INPUT Doxygen)
-        set(DOXYGEN_OUTPUT doc/html)
-
-        add_custom_command(
-        OUTPUT ${DOXYGEN_OUTPUT}
-        COMMAND ${CMAKE_COMMAND} -E echo_append "Building API Documentation..."
-        COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_INPUT}
-        COMMAND ${CMAKE_COMMAND} -E echo "Done."
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        DEPENDS ${DOXYGEN_INPUT}
-        )
-
-        add_custom_target(apidoc ALL DEPENDS ${DOXYGEN_OUTPUT})
-
-    endif (DOXYGEN_FOUND)
-endif()
 
 if (WIN32)
     set (WAR_SYSTEM_EOL \"\\r\\n\")
@@ -135,3 +84,5 @@ endif()
 
 message(STATUS "Writing the current configuration to ${CONF_PATH}")
 CONFIGURE_FILE(war_config.h.template ${CONF_PATH})
+
+include(cmake_scripts/doxygen.cmake)

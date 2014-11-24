@@ -22,6 +22,8 @@ add_executable(warlib_unit_tests ${SOURCES})
 target_link_libraries(warlib_unit_tests pthread ${DEFAULT_LIBRARIES} war_log war_tasks
   boost_unit_test_framework)
 
-
 add_executable(perftests perftests.cpp)
 target_link_libraries(perftests ${DEFAULT_LIBRARIES}  war_log war_tasks)
+
+add_test(WARLIB_UNITTESTS warlib_unit_tests)
+add_test(WARLIB_PERFORMANCE_TEST perftests)
