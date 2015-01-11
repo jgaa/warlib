@@ -31,5 +31,7 @@ set (BOOST_LIBRARIES
 set (DEFAULT_LIBRARIES
     ${DEFAULT_LIBRARIES}
     pthread
+    ssl
+    crypto
     ${BOOST_LIBRARIES}
     )
