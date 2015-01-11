@@ -106,46 +106,46 @@ struct ExceptionIoError : public ExceptionBase {};
 
 #define WAR_CATCH_NORMAL \
 catch(const war::ExceptionBase& ex) { \
-    LOG_WARN_FN << "Caught exception: " << ex; \
+    LOG_WARN_FN << "Caught exception [" << typeid(ex).name() << "]: " << ex; \
 } catch(const boost::exception& ex) { \
-    LOG_WARN_FN << "Caught boost exception: " << ex; \
+    LOG_WARN_FN << "Caught boost exception [" << typeid(ex).name() << "]: " << ex; \
 } catch(const std::exception& ex) { \
-    LOG_WARN_FN << "Caught standad exception: " << ex; \
+    LOG_WARN_FN << "Caught standad exception [" << typeid(ex).name() << "]: " << ex; \
 }
 
 #define WAR_CATCH_ERROR \
 catch(const war::ExceptionBase& ex) { \
-    LOG_ERROR_FN << "Caught exception: " << ex; \
+    LOG_ERROR_FN << "Caught exception [" << typeid(ex).name() << "]: " << ex; \
 } catch(const boost::exception& ex) { \
-    LOG_ERROR_FN << "Caught boost exception: " << ex; \
+    LOG_ERROR_FN << "Caught boost exception [" << typeid(ex).name() << "]: " << ex; \
 } catch(const std::exception& ex) { \
-    LOG_ERROR_FN << "Caught standad exception: " << ex; \
+    LOG_ERROR_FN << "Caught standad exception [" << typeid(ex).name() << "]: " << ex; \
 }
 
 
 #define WAR_CATCH_ALL_E \
 catch(const war::ExceptionBase& ex) { \
-    LOG_ERROR_FN << "Caught exception: " << ex; \
+    LOG_ERROR_FN << "Caught exception [" << typeid(ex).name() << "]: " << ex; \
 } catch(const boost::exception& ex) { \
-    LOG_ERROR_FN << "Caught boost exception: " << ex; \
+    LOG_ERROR_FN << "Caught boost exception [" << typeid(ex).name() << "]: " << ex; \
 } catch(const std::exception& ex) { \
-    LOG_ERROR_FN << "Caught standad exception: " << ex; \
+    LOG_ERROR_FN << "Caught standad exception [" << typeid(ex).name() << "]: " << ex; \
 } catch(...) { \
-    LOG_ERROR_FN << "Caught UNKNOWN exception!"; \
+    LOG_ERROR_FN << "Caught UNKNOWN exception! [" << typeid(std::current_exception()).name() << "]"; \
 }
 
 #define WAR_CATCH_ALL_EF(func) \
 catch(const war::ExceptionBase& ex) { \
-    LOG_ERROR_FN << "Caught exception: " << ex; \
+    LOG_ERROR_FN << "Caught exception [" << typeid(ex).name() << "]: " << ex; \
     func;\
 } catch(const boost::exception& ex) { \
-    LOG_ERROR_FN << "Caught boost exception: " << ex; \
+    LOG_ERROR_FN << "Caught boost exception [" << typeid(ex).name() << "]: " << ex; \
     func;\
 } catch(const std::exception& ex) { \
-    LOG_ERROR_FN << "Caught standad exception: " << ex; \
+    LOG_ERROR_FN << "Caught standad exception [" << typeid(ex).name() << "]:  " << ex; \
     func;\
 } catch(...) { \
-    LOG_ERROR_FN << "Caught UNKNOWN exception!"; \
+    LOG_ERROR_FN << "Caught UNKNOWN exception! [" << typeid(std::current_exception()).name() << "]"; \
     func;\
 }
 
