@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
                                           log::LL_TRACE4, log::LA_DEFAULT_ENABLE | log::LA_THREADS) );
 
     const size_t capacity = 16;
-    unique_ptr<Pipeline> pipeline { new Pipeline("UnitTest_multithreading", capacity) };
+    unique_ptr<Pipeline> pipeline { new Pipeline("UnitTest_multithreading", -1, capacity) };
 
     // Test that a callback is called at all
     {
@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
             promise<void> sync;
             pipeline->Post({[&] {
                 sync.set_value();
-                unique_lock<mutex> lock(barrier);
+                unique_lock<mutex> llock(barrier);
             }, "Lock the sequencer"});
 
             sync.get_future().get();
@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
             promise<void> sync;
             pipeline->Post({[&] {
                 sync.set_value();
-                unique_lock<mutex> lock(barrier);
+                unique_lock<mutex> llock(barrier);
             }, "Lock the sequencer"});
 
             sync.get_future().get();
@@ -175,7 +175,7 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
                 if (--levels) {
                     pipeline->Dispatch(recurse);
                 }
-                unique_lock<mutex> lock(barrier);
+                unique_lock<mutex> llock(barrier);
                 if (virgin)
                     done_sync.set_value();
             }, "recurse"

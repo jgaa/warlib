@@ -24,7 +24,7 @@ std::ostream& operator << (std::ostream& o, const war::Pipeline& pipeline)
 war::Pipeline::Pipeline(const string &name,
                         int id,
                         const std::size_t capacity)
-: io_service_ { new boost::asio::io_service }, name_ { name }
+: io_service_ { new boost::asio::io_service }, name_ (name)
 , closed_ {false}, capacity_ { capacity }, count_ {0}
 , closing_ {false}, id_ {id}
 {

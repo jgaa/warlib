@@ -19,8 +19,9 @@ endif()
 add_definitions(-DBOOST_TEST_DYN_LINK)
 
 add_executable(warlib_unit_tests ${SOURCES})
-target_link_libraries(warlib_unit_tests pthread ${DEFAULT_LIBRARIES} war_log war_tasks
-  boost_unit_test_framework)
+target_link_libraries(warlib_unit_tests ${DEFAULT_LIBRARIES} war_log war_tasks
+  ${BOOST_UNIT_TEST_LIBRARIES}
+  )
 
 add_executable(perftests perftests.cpp)
 target_link_libraries(perftests ${DEFAULT_LIBRARIES}  war_log war_tasks)

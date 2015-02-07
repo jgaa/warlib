@@ -3,7 +3,7 @@ project(base)
 set(ACTUAL_SOURCES ostream_operators.cpp)
 
 if (WIN32)
-	set(SOURCES ${ACTUAL_SOURCES} ${HEADERS} ${RESFILES})
+	set(SOURCES win/minidump.cpp ${ACTUAL_SOURCES} ${HEADERS} ${RESFILES})
 else()
 	set(SOURCES ${ACTUAL_SOURCES})
 endif()

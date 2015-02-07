@@ -16,7 +16,7 @@ using namespace war;
 class Test
 {
 public:
-    Test(const std::string& name) : name_{name} {}
+    Test(const std::string& name) : name_(name) {}
     virtual ~Test() {}
 
     void RunTests()
@@ -47,8 +47,8 @@ private:
 class SimpleTest : public Test
 {
 public:
-    SimpleTest(const std::string& name, int64_t numTasks)
-        : Test(name), pool_(0, numTasks),
+    SimpleTest(const std::string& name, uint64_t numTasks)
+        : Test(name), pool_(0, static_cast<unsigned int>(numTasks)),
         total_tasks_processed_(0), total_tasks_queued_(0),
         done_{false},
         num_tasks_to_do_{numTasks}
@@ -88,10 +88,10 @@ protected:
 
 private:
     Threadpool pool_;
-    std::atomic<std::int64_t> total_tasks_processed_;
-    std::atomic<std::int64_t> total_tasks_queued_;
+    std::atomic<std::uint64_t> total_tasks_processed_;
+    std::atomic<std::uint64_t> total_tasks_queued_;
     atomic<bool> done_;
-    const int64_t num_tasks_to_do_;
+    const uint64_t num_tasks_to_do_;
 
 };
 

@@ -3,15 +3,16 @@
 # This project is currently being developed with Debian "testing", using the
 # latest clang++ and g++ compilers and libraries.
 #
-# AFAIK, the Microsoft C++ compiler is not yet up to specs with C++14, so I have
-# not made any attempts to prepare this CMake project for msvc.
-# C++14 mile-stone.
-#
+# Supported compilers:
+#  - Clang 3.5.1 [Tested with Debian jessie]
+#  - g++ 4.9     [Tested with Debian jessie]
+#  - Microsoft Visual Studio 2015 preview [Tested with Windows 7]
 
 cmake_minimum_required(VERSION 3.0)
 project (Warlib)
 
 include(cmake_scripts/boost.cmake)
+include(cmake_scripts/pch.cmake)
 
 if (NOT DEFINED WITH_APIDOC)
 	option(WITH_APIDOC "Generate Doxygen documentation")
@@ -24,6 +25,7 @@ endif()
 if (NOT DEFINED WARLIB_ROOT_DIR)
 	set(WARLIB_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
+
 
 # We create a configuration file so that other code that
 # include our header files gets the correct configuration.
@@ -38,6 +40,16 @@ if (UNIX)
     add_definitions(-D__USE_LARGEFILE64=1 -D__USE_FILE_OFFSET64=1
         -Wall -fPIC -std=c++1y -pthread
     )
+elseif(WIN32)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG=1 ")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 -D_DEBUG=1 ")
+	# We will support windows from Windows Vista
+	add_definitions(-D_WIN32_WINNT=0x0600)
+endif()
+
+if (OPENSSL_ROOT)
+	include_directories(${OPENSSL_ROOT}/include)
+	link_directories(${OPENSSL_ROOT}/lib/VC)
 endif()
 
 if (BOOST_ROOT)
