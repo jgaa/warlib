@@ -1,4 +1,18 @@
 
+set(Boost_USE_MULTITHREADED ON)
+find_package(Boost REQUIRED COMPONENTS
+    system
+    program_options
+    serialization
+    filesystem
+    date_time
+    iostreams
+    regex
+    context
+    coroutine
+    chrono
+    )
+
 if (WIN32)
     # Msvc and possible some other Windows-compilers will link
     # to the correct libraries trough #pragma directives in boost headers.
@@ -30,7 +44,7 @@ if (UNIX)
 		${LIB_BOOST_COROUTINE}
 		${LIB_BOOST_CHRONO}
     )
-	
+
 	set(BOOST_UNIT_TEST_LIBRARIES boost_unit_test_framework)
 endif()
 
@@ -40,10 +54,10 @@ if (UNIX)
 else()
 	set(SSL_LIBS optimized libeay32MT debug libeay32MTd optimized ssleay32MT debug ssleay32MTd)
 endif()
-	
+
 set (DEFAULT_LIBRARIES
     ${DEFAULT_LIBRARIES}
     ${THREADLIBS}
     ${SSL_LIBS}
-    ${BOOST_LIBRARIES}
+    ${Boost_LIBRARIES}
     )

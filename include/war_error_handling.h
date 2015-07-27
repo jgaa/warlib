@@ -3,6 +3,7 @@
 #include <string>
 #include <exception>
 #include <boost/exception/all.hpp>
+#include <boost/current_function.hpp>
 #include <cassert>
 #include <functional>
 
@@ -88,7 +89,7 @@ struct ExceptionIoError : public ExceptionBase {};
 } // namespace
 
 
-#define WAR_FUNCTION_NAME __FUNCTION__
+#define WAR_FUNCTION_NAME BOOST_CURRENT_FUNCTION
 
 #define WAR_EXCEPTION_TYPE(exception_type, expl) { exception_type _war_exception_for_throw; _war_exception_for_throw << war::exception_expl(expl)
 

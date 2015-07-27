@@ -12,7 +12,7 @@ template <typename ContT, typename KeyT, typename ValT>
 void WarMapAddUnique(ContT& container, const KeyT& key, ValT&& val) {
 
     if (container.find(key) != container.end()) {
-        WAR_THROW_T(war::ExceptionAlreadyExist, key);
+        WAR_THROW_T(war::ExceptionAlreadyExist, std::to_string(key));
     }
 
     container[key] = val;

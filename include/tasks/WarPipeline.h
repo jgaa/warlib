@@ -33,10 +33,18 @@ public:
     /*! Thrown from post/dispatch functions if the capacity of the queue is used up */
     struct ExceptionCapacityExceeded : public ExceptionBase {};
 
-    /*! Construct a Pipeline */
+    /*! Construct a Pipeline
+     *
+     * \param name Name of the pipeline (primarily for logging).
+     * \param id Numerical, unique ID for the pipeline
+     * \param capacity Max number of queued tasks
+     * \param pinTo CPU-ID to pin the therad to. If -1, the OS is free
+     *      to schedule the thread on any CPU.
+     */
     Pipeline(const std::string &name = "Pipeline",
              int id = -1,
-             const std::size_t capacity = 1024);
+             const std::size_t capacity = 1024,
+             int pinTo = -1);
     ~Pipeline();
 
     Pipeline& operator = (const Pipeline&) = delete;
@@ -115,7 +123,7 @@ public:
 
 private:
     using my_sync_t = std::promise<void>;
-    void Run(my_sync_t& sync);
+    void Run(my_sync_t& sync, int pinTo);
     void ExecTask_(const task_t& task, bool counting);
     void OnTimer_(
         const timer_t& timer,

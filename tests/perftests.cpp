@@ -12,6 +12,7 @@
 using namespace std;
 using namespace war;
 
+war::Threadpool::pinning_t pinning;
 
 class Test
 {
@@ -48,7 +49,8 @@ class SimpleTest : public Test
 {
 public:
     SimpleTest(const std::string& name, uint64_t numTasks)
-        : Test(name), pool_(0, static_cast<unsigned int>(numTasks)),
+        : Test(name), pool_(pinning.size(), static_cast<unsigned int>(numTasks),
+                            pinning.empty() ? nullptr : &pinning),
         total_tasks_processed_(0), total_tasks_queued_(0),
         done_{false},
         num_tasks_to_do_{numTasks}
@@ -96,11 +98,23 @@ private:
 };
 
 
-int main(int arc, char *argv[])
+int main(int argc, char *argv[])
 {
     log::LogEngine logger;
     logger.AddHandler(make_shared<log::LogToStream>());
-    logger.AddHandler(make_shared<log::LogToFile>("perf_tests.log", true, "file", log::LL_TRACE1));
+    logger.AddHandler(make_shared<log::LogToFile>("perf_tests.log", true,
+                                                  "file", log::LL_TRACE1));
+
+    for(auto i = 1; i < argc; ++i) {
+        const char *p = argv[i];
+        if (*p == '-' && p[1] == 'h') {
+            cout << "Usage: perftests [cpu [cpu ...]]" << endl;
+            return -1;
+        }
+
+        pinning.push_back(atoi(argv[i]));
+        LOG_DEBUG_FN << "Adding one thread pinned to CPU# " << pinning.back();
+    }
 
     SimpleTest ss("SimpleTest", 50000000L);
     ss.RunTests();

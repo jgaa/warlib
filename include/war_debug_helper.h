@@ -1,8 +1,12 @@
 #pragma once
 
+#include "war_error_handling.h"
+
 #ifdef WIN32
 #	include <windows.h>
 const DWORD MS_VC_EXCEPTION=0x406D1388;
+#else
+#   include <sys/prctl.h>
 #endif
 
 namespace war {
@@ -20,8 +24,7 @@ typedef struct tagTHREADNAME_INFO
 } THREADNAME_INFO;
 #pragma pack(pop)
 
-inline void SetThreadName(const std::string& name)
-{
+inline void SetThreadName(const std::string& name) noexcept {
     if (::IsDebuggerPresent()) {
         THREADNAME_INFO info;
         info.dwType = 0x1000;
@@ -41,7 +44,12 @@ inline void SetThreadName(const std::string& name)
 }
 
 #else
-inline void SetThreadName(const std::string& threadName) {}
+inline void SetThreadName(const std::string& threadName) noexcept {
+#ifdef PR_SET_NAME
+    WAR_ASSERT(threadName.size() <= 16);
+    prctl(PR_SET_NAME, threadName.c_str(), 0, 0, 0);
+#endif
+}
 #endif
 
 }

@@ -19,7 +19,7 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
                                           log::LL_TRACE4, log::LA_DEFAULT_ENABLE | log::LA_THREADS) );
 
     const size_t capacity = 16;
-    unique_ptr<Pipeline> pipeline { new Pipeline("UnitTest_multithreading", -1, capacity) };
+    unique_ptr<Pipeline> pipeline { new Pipeline("UnitTest_MT", -1, capacity) };
 
     // Test that a callback is called at all
     {

@@ -6,6 +6,10 @@
 #include "log/WarLog.h"
 #include "war_debug_helper.h"
 
+#ifndef WIN32
+#   include <pthread.h>
+#endif
+
 using namespace std;
 using namespace war;
 using namespace std::string_literals;
@@ -23,7 +27,8 @@ std::ostream& operator << (std::ostream& o, const war::Pipeline& pipeline)
 
 war::Pipeline::Pipeline(const string &name,
                         int id,
-                        const std::size_t capacity)
+                        const std::size_t capacity,
+                        int pinTo)
 : io_service_ { new boost::asio::io_service }, name_ (name)
 , closed_ {false}, capacity_ { capacity }, count_ {0}
 , closing_ {false}, id_ {id}
@@ -32,7 +37,7 @@ war::Pipeline::Pipeline(const string &name,
     LOG_TRACE3_F_FN(log::LA_THREADS) << log::Esc(name_);
 
     my_sync_t sync;
-    thread_.reset(new thread(&war::Pipeline::Run, this, ref(sync)));
+    thread_.reset(new thread(&war::Pipeline::Run, this, ref(sync), pinTo));
 
     // Wait for the thread to run so that we can re-throw any early exceptions
     sync.get_future().get();
@@ -49,11 +54,25 @@ war::Pipeline::~Pipeline()
     }
 }
 
-void war::Pipeline::Run(my_sync_t & sync)
+void war::Pipeline::Run(my_sync_t & sync, const int pinTo)
 {
     WAR_LOG_FUNCTION;
 
     unique_lock<mutex> waiter_lock(waiter_);
+
+#ifndef WIN32
+    if (pinTo != -1) {
+        cpu_set_t cs{};
+        CPU_SET(pinTo, &cs);
+        if (pthread_setaffinity_np(pthread_self(), 1, &cs) == 0) {
+            LOG_TRACE1_FN << "This thread is pinned to CPU# " << pinTo;
+        } else {
+            const log::Errno err;
+            LOG_WARN_FN << "Failed to pin thread to CPU# " << pinTo
+                << ": " << err;
+        }
+    }
+#endif
 
     try {
         debug::SetThreadName(name_);

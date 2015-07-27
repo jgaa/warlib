@@ -110,11 +110,12 @@ namespace war { namespace log {
     {
         for(int ll = LL_FATAL; ll <= LL_TRACE4; ++ll) {
             if (name == LogEventHandler::GetLevelName((LogLevel)ll))
-                return (LogLevel)ll;
+                return static_cast<LogLevel>(ll);
         }
 
-        WAR_EXCEPTION(std::string("No such log-level: ") + "\"" + name + "\"");
-        WAR_EXCEPTION_THROW;
+        std::ostringstream msg;
+        msg << "No such log-level: " << "\""  << name << "\"";
+        WAR_THROW(msg.str());
     }
 
 

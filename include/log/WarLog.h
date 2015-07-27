@@ -40,26 +40,26 @@
 #define LOG_TRACE4 __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE4, war::log::LA_GENERAL)
 #define LOG_TRACE4_F(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE4, filter)
 
-#define LOG_FATAL_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_FATAL, war::log::LA_GENERAL) << WAR_FUNCTION_NAME << ": "
-#define LOG_FATAL_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_FATAL, filter) << WAR_FUNCTION_NAME << ": "
-#define LOG_ERROR_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_ERROR, war::log::LA_GENERAL) << WAR_FUNCTION_NAME << ": "
-#define LOG_ERROR_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_ERROR, filter) << WAR_FUNCTION_NAME << ": "
-#define LOG_WARN_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_WARNING, war::log::LA_GENERAL) << WAR_FUNCTION_NAME << ": "
-#define LOG_WARN_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_WARNING, filter) << WAR_FUNCTION_NAME << ": "
-#define LOG_INFO_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_INFO, war::log::LA_GENERAL) << WAR_FUNCTION_NAME << ": "
-#define LOG_INFO_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_INFO, filter) << WAR_FUNCTION_NAME << ": "
-#define LOG_NOTICE_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_NOTICE, war::log::LA_GENERAL) << WAR_FUNCTION_NAME << ": "
-#define LOG_NOTICE_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_NOTICE, filter) << WAR_FUNCTION_NAME << ": "
-#define LOG_DEBUG_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_DEBUG, war::log::LA_GENERAL) << WAR_FUNCTION_NAME << ": "
-#define LOG_DEBUG_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_DEBUG, filter) << WAR_FUNCTION_NAME << ": "
-#define LOG_TRACE1_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE1, war::log::LA_GENERAL) << WAR_FUNCTION_NAME << ": "
-#define LOG_TRACE1_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE1, filter) << WAR_FUNCTION_NAME << ": "
-#define LOG_TRACE2_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE2, war::log::LA_GENERAL) << WAR_FUNCTION_NAME << ": "
-#define LOG_TRACE2_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE2, filter) << WAR_FUNCTION_NAME << ": "
-#define LOG_TRACE3_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE3, war::log::LA_GENERAL) << WAR_FUNCTION_NAME << ": "
-#define LOG_TRACE3_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE3, filter) << WAR_FUNCTION_NAME << ": "
-#define LOG_TRACE4_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE4, war::log::LA_GENERAL) << WAR_FUNCTION_NAME << ": "
-#define LOG_TRACE4_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE4, filter) << WAR_FUNCTION_NAME << ": "
+#define LOG_FATAL_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_FATAL, war::log::LA_GENERAL) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_FATAL_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_FATAL, filter) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_ERROR_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_ERROR, war::log::LA_GENERAL) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_ERROR_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_ERROR, filter) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_WARN_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_WARNING, war::log::LA_GENERAL) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_WARN_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_WARNING, filter) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_INFO_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_INFO, war::log::LA_GENERAL) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_INFO_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_INFO, filter) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_NOTICE_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_NOTICE, war::log::LA_GENERAL) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_NOTICE_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_NOTICE, filter) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_DEBUG_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_DEBUG, war::log::LA_GENERAL) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_DEBUG_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_DEBUG, filter) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_TRACE1_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE1, war::log::LA_GENERAL) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_TRACE1_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE1, filter) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_TRACE2_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE2, war::log::LA_GENERAL) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_TRACE2_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE2, filter) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_TRACE3_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE3, war::log::LA_GENERAL) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_TRACE3_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE3, filter) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_TRACE4_FN __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE4, war::log::LA_GENERAL) << "{" << WAR_FUNCTION_NAME << "}: "
+#define LOG_TRACE4_F_FN(filter) __WAR_LOG_WITH_LEVEL_AND_FILTER(war::log::LL_TRACE4, filter) << "{" << WAR_FUNCTION_NAME << "}: "
 
 
 namespace war {
@@ -445,6 +445,49 @@ private:
     const LogLevel level_;
 };
 
+class Timer
+{
+public:
+    Timer()
+    {}
+
+    std::ostream& Stream (std::ostream& o) const {
+
+        const auto duration =
+            (is_running_ ? std::chrono::steady_clock::now() : end_) - start_;
+
+        const auto mi = std::chrono::duration_cast<std::chrono::minutes>(duration).count();
+        if (mi > 5) {
+            return o << mi << " minutes";
+        }
+
+        const auto sec = std::chrono::duration_cast<std::chrono::seconds>(duration).count();
+        if (sec > 5) {
+            return o << sec << " seconds";
+        }
+
+        const auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+        if (ms > 5) {
+            return o << ms << " milliseconds";
+        }
+
+        return o
+            <<  std::chrono::duration_cast<std::chrono::microseconds>(duration).count()
+            << " microseconds";
+    }
+
+    void Stop() {
+        end_ = std::chrono::steady_clock::now();
+        is_running_ = false;
+    }
+
+private:
+    std::chrono::steady_clock::time_point end_;
+    bool is_running_ {true};
+    const std::chrono::steady_clock::time_point start_
+        = std::chrono::steady_clock::now();
+};
+
 #if defined(_DEBUG) || defined(DEBUG)
 #  define WAR_LOG_FUNCTION war::log::LogFunctionCall _war_log_this_function(WAR_FUNCTION_NAME, __LINE__, __FILE__);
 #else
@@ -461,3 +504,4 @@ std::ostream& operator << (std::ostream& out, const war::ExceptionBase& ex);
 std::ostream& operator << (std::ostream& out, const boost::exception& ex);
 std::ostream& operator << (std::ostream& out, const boost::system::error_code& err);
 std::ostream& operator << (std::ostream& out, const war::log::Esc& esc);
+std::ostream& operator << (std::ostream& out, const war::log::Timer& timer);

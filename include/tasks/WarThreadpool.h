@@ -11,6 +11,7 @@ namespace war {
     class Threadpool
     {
     public:
+        using pinning_t = std::vector<int>;
         /*! Construct a threadpool
 
             \param numThreads Number of threads to start. This
@@ -19,8 +20,24 @@ namespace war {
                 selected, based on the available hardware-
                 concurrency.
                 The current alogrithm is: max(2, cores -1)
+
+            \param maxPerThreadQueueCapacity Maximum number of tasks that can
+                be queued for each thread in the thread-pool.
+
+            \param pinning Definition of CPU pinning for threads. The array is
+                read from start to end, and if the array (a[n]) is large enough
+                and contain another value than -1, the thread-pool will try to
+                pin the thread (n) to a CPU-ID equal to the value. On Linux,
+                CPU's are named from 0 - n, incremented by each core (or, if
+                hyper-threading is enabled, incremented by one for each HT
+                thread for each core). Pinning can in theory give a higher
+                performance, as the cache-lines for the thread never has to be
+                migrated to another CPU. The real performance-gain (or drop)
+                will depend on the actual system and it's load.
         */
-        Threadpool(unsigned numThreads = 0, unsigned maxPerThreadQueueCapacity = 1024);
+        Threadpool(unsigned numThreads = 0,
+                   unsigned maxPerThreadQueueCapacity = 1024,
+                   pinning_t *pinning = nullptr);
         ~Threadpool();
 
         void Post(const task_t &task);
@@ -45,7 +62,7 @@ namespace war {
         using pool_t = std::vector<std::unique_ptr<Pipeline>>;
 
         pool_t pool_;
-        std::atomic_size_t round_robin_next_thread_;
+        std::atomic_uint round_robin_next_thread_;
         const unsigned capacity_;
         std::mutex close_mutex_;
         std::atomic_bool closed_;

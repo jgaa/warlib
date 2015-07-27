@@ -9,7 +9,8 @@ using namespace std;
 using namespace war;
 
 war::Threadpool::Threadpool(const unsigned numThreads,
-                            unsigned maxPerThreadQueueCapacity)
+                            unsigned maxPerThreadQueueCapacity,
+                            pinning_t *pinning)
 : capacity_(numThreads > 0 ? numThreads
                            : max<unsigned>(2, thread::hardware_concurrency() - 1))
 {
@@ -24,7 +25,9 @@ war::Threadpool::Threadpool(const unsigned numThreads,
         auto name = string("Pool-worker_") + to_string(i);
         pool_.emplace_back(std::unique_ptr<Pipeline>
                            (new Pipeline {name, static_cast<int>(i),
-                               maxPerThreadQueueCapacity}));
+                               maxPerThreadQueueCapacity,
+                               ((pinning && pinning->size() > i) ? pinning->at(i) : -1)
+                        }));
     }
 }
 

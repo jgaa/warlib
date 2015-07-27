@@ -27,3 +27,7 @@ std::ostream& operator << (std::ostream& out, const boost::system::error_code& e
         << " }";
 }
 
+std::ostream& operator << (std::ostream& out, const war::log::Timer& timer)
+{
+    return timer.Stream(out);
+}
