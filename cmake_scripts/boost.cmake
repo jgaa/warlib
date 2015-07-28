@@ -13,6 +13,8 @@ find_package(Boost REQUIRED COMPONENTS
     chrono
     )
 
+include_directories(${Boost_INCLUDE_DIRS})
+
 if (WIN32)
     # Msvc and possible some other Windows-compilers will link
     # to the correct libraries trough #pragma directives in boost headers.

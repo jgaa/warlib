@@ -9,10 +9,14 @@
 #  - Microsoft Visual Studio 2015 preview [Tested with Windows 7]
 
 cmake_minimum_required(VERSION 3.0)
-project (Warlib)
+project (warlib)
 
-include(cmake_scripts/boost.cmake)
-include(cmake_scripts/pch.cmake)
+if (NOT DEFINED WARLIB_ROOT_DIR)
+    set(WARLIB_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
+include(${WARLIB_ROOT_DIR}/cmake_scripts/boost.cmake)
+include(${WARLIB_ROOT_DIR}/cmake_scripts/pch.cmake)
 
 if (NOT DEFINED WITH_APIDOC)
 	option(WITH_APIDOC "Generate Doxygen documentation")
@@ -22,16 +26,16 @@ if (NOT DEFINED WAR_WITH_UNIT_TESTS)
 	option(WAR_WITH_UNIT_TESTS "Enable Unit Testing" ON)
 endif()
 
-if (NOT DEFINED WARLIB_ROOT_DIR)
-	set(WARLIB_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-endif()
 
 
 # We create a configuration file so that other code that
 # include our header files gets the correct configuration.
-set(CONF_PATH ${PROJECT_SOURCE_DIR}/include/war_config.h)
+set(CONF_PATH ${WARLIB_ROOT_DIR}/include/war_config.h)
 
 message(STATUS "Using ${CMAKE_CXX_COMPILER}")
+
+find_package(OpenSSL REQUIRED)
+
 
 if (UNIX)
   # For now, assume we use g++/clang++
@@ -47,32 +51,34 @@ elseif(WIN32)
 	add_definitions(-D_WIN32_WINNT=0x0600)
 endif()
 
-if (OPENSSL_ROOT)
-	include_directories(${OPENSSL_ROOT}/include)
-	link_directories(${OPENSSL_ROOT}/lib/VC)
-endif()
+# if (OPENSSL_ROOT)
+# 	include_directories(${OPENSSL_ROOT}/include)
+# 	link_directories(${OPENSSL_ROOT}/lib/VC)
+# endif()
 
-if (BOOST_ROOT)
-	if (NOT BOOST_INCLUDE_DIR)
-		set(BOOST_INCLUDE_DIR ${BOOST_ROOT})
-	endif()
 
-	if (NOT BOOST_LIBRARY_DIRS)
-		set(BOOST_LIBRARY_DIRS ${BOOST_ROOT}/stage/lib CACHE PATH "path to prebuilt library")
-	endif()
-else()
-    message(STATUS "No BOOST_ROOT set. Assuming that boost is installed and available for the compiler")
-endif()
 
-if (BOOST_INCLUDE_DIR)
-	message(STATUS "Setting boost include-dir to: ${BOOST_INCLUDE_DIR}")
-	include_directories(${BOOST_INCLUDE_DIR})
-endif()
-
-if (BOOST_LIBRARY_DIRS)
-	message(STATUS "Setting boost libdir to: ${BOOST_LIBRARY_DIRS}")
-	link_directories(${BOOST_LIBRARY_DIRS} )
-endif()
+# if (BOOST_ROOT)
+# 	if (NOT BOOST_INCLUDE_DIR)
+# 		set(BOOST_INCLUDE_DIR ${BOOST_ROOT})
+# 	endif()
+#
+# 	if (NOT BOOST_LIBRARY_DIRS)
+# 		set(BOOST_LIBRARY_DIRS ${BOOST_ROOT}/stage/lib CACHE PATH "path to prebuilt library")
+# 	endif()
+# else()
+#     message(STATUS "No BOOST_ROOT set. Assuming that boost is installed and available for the compiler")
+# endif()
+#
+# if (BOOST_INCLUDE_DIR)
+# 	message(STATUS "Setting boost include-dir to: ${BOOST_INCLUDE_DIR}")
+# 	include_directories(${BOOST_INCLUDE_DIR})
+# endif()
+#
+# if (BOOST_LIBRARY_DIRS)
+# 	message(STATUS "Setting boost libdir to: ${BOOST_LIBRARY_DIRS}")
+# 	link_directories(${BOOST_LIBRARY_DIRS} )
+# endif()
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib CACHE PATH "Destination location")
 link_directories(${LIBRARY_OUTPUT_PATH})
@@ -95,6 +101,6 @@ else()
 endif()
 
 message(STATUS "Writing the current configuration to ${CONF_PATH}")
-CONFIGURE_FILE(war_config.h.template ${CONF_PATH})
+CONFIGURE_FILE(${WARLIB_ROOT_DIR}/war_config.h.template ${CONF_PATH})
 
-include(cmake_scripts/doxygen.cmake)
+include(${WARLIB_ROOT_DIR}/cmake_scripts/doxygen.cmake)
