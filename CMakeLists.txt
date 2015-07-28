@@ -15,9 +15,6 @@ if (NOT DEFINED WARLIB_ROOT_DIR)
     set(WARLIB_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
-include(${WARLIB_ROOT_DIR}/cmake_scripts/boost.cmake)
-include(${WARLIB_ROOT_DIR}/cmake_scripts/pch.cmake)
-
 if (NOT DEFINED WITH_APIDOC)
 	option(WITH_APIDOC "Generate Doxygen documentation")
 endif()
@@ -34,21 +31,36 @@ set(CONF_PATH ${WARLIB_ROOT_DIR}/include/war_config.h)
 
 message(STATUS "Using ${CMAKE_CXX_COMPILER}")
 
-find_package(OpenSSL REQUIRED)
+if (NOT EMBEDDED_WARLIB)
+    find_package(OpenSSL REQUIRED)
 
+    include(cmake_scripts/boost.cmake)
+    include(cmake_scripts/pch.cmake)
 
-if (UNIX)
-  # For now, assume we use g++/clang++
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG=1 -o3 ")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 -D_DEBUG=1 -o0 -g ")
-    add_definitions(-D__USE_LARGEFILE64=1 -D__USE_FILE_OFFSET64=1
-        -Wall -fPIC -std=c++1y -pthread
-    )
-elseif(WIN32)
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG=1 ")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 -D_DEBUG=1 ")
-	# We will support windows from Windows Vista
-	add_definitions(-D_WIN32_WINNT=0x0600)
+    if (UNIX)
+    # For now, assume we use g++/clang++
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG=1 -o3 ")
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 -D_DEBUG=1 -o0 -g ")
+        add_definitions(-D__USE_LARGEFILE64=1 -D__USE_FILE_OFFSET64=1
+            -Wall -fPIC -std=c++1y -pthread
+        )
+    elseif(WIN32)
+        set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -DNDEBUG=1 ")
+        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DDEBUG=1 -D_DEBUG=1 ")
+        # We will support windows from Windows Vista
+        add_definitions(-D_WIN32_WINNT=0x0600)
+    endif()
+
+    set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib CACHE PATH "Destination location")
+    link_directories(${LIBRARY_OUTPUT_PATH})
+
+    include_directories(include)
+endif()
+
+add_subdirectory(src)
+
+if (WAR_WITH_UNIT_TESTS)
+    add_subdirectory(tests)
 endif()
 
 # if (OPENSSL_ROOT)
@@ -80,19 +92,6 @@ endif()
 # 	link_directories(${BOOST_LIBRARY_DIRS} )
 # endif()
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib CACHE PATH "Destination location")
-link_directories(${LIBRARY_OUTPUT_PATH})
-
-include_directories(
-	${PROJECT_SOURCE_DIR}/include
-	)
-
-add_subdirectory(src)
-
-if (WAR_WITH_UNIT_TESTS)
-	add_subdirectory(tests)
-endif()
-
 
 if (WIN32)
     set (WAR_SYSTEM_EOL \"\\r\\n\")
@@ -100,7 +99,7 @@ else()
     set (WAR_SYSTEM_EOL \"\\n\")
 endif()
 
-message(STATUS "Writing the current configuration to ${CONF_PATH}")
-CONFIGURE_FILE(${WARLIB_ROOT_DIR}/war_config.h.template ${CONF_PATH})
+message(STATUS "Writing the current warlib configuration to ${CONF_PATH}")
+CONFIGURE_FILE(war_config.h.template ${CONF_PATH})
 
-include(${WARLIB_ROOT_DIR}/cmake_scripts/doxygen.cmake)
+include(cmake_scripts/doxygen.cmake)
