@@ -86,6 +86,8 @@ struct ExceptionFailedToConnect : public ExceptionBase {};
 
 struct ExceptionIoError : public ExceptionBase {};
 
+struct ExceptionBadState : public ExceptionBase {};
+
 } // namespace
 
 
