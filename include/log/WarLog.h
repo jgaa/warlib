@@ -329,6 +329,11 @@ public:
         \exception Exception on invalid name.
     */
     static LogLevel GetLevelFromName(const std::string& name) noexcept;
+    
+    static LogEngine& GetInstance() {
+        WAR_ASSERT (instance_);
+        return *instance_;
+    }
 
 private:
     void DoSubmit ( Log& log ) noexcept;
