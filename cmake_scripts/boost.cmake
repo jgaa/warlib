@@ -2,6 +2,7 @@
 set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED COMPONENTS
     system
+    thread
     program_options
     serialization
     filesystem
@@ -30,7 +31,8 @@ else ()
     set(LIB_BOOST_CONTEXT boost_context)
     set(LIB_BOOST_COROUTINE boost_coroutine)
     set(LIB_BOOST_CHRONO boost_chrono)
-	SET(BOOST_UNIT_TEST_FRAMEWORK boost_unit_test_framework)
+    set(LIB_BOOST_THREAD boost_thread)
+    set(BOOST_UNIT_TEST_FRAMEWORK boost_unit_test_framework)
 endif ()
 
 if (UNIX)
@@ -45,6 +47,7 @@ if (UNIX)
 		${LIB_BOOST_CONTEXT}
 		${LIB_BOOST_COROUTINE}
 		${LIB_BOOST_CHRONO}
+		${LIB_BOOST_THREAD}
     )
 
 	set(BOOST_UNIT_TEST_LIBRARIES boost_unit_test_framework)
