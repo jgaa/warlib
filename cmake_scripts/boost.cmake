@@ -64,5 +64,5 @@ set (DEFAULT_LIBRARIES
     ${DEFAULT_LIBRARIES}
     ${THREADLIBS}
     ${SSL_LIBS}
-    ${Boost_LIBRARIES}
+    ${BOOST_LIBRARIES}
     )
