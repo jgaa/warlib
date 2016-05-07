@@ -12,6 +12,7 @@ find_package(Boost REQUIRED COMPONENTS
     context
     coroutine
     chrono
+    unit_test_framework
     )
 
 include_directories(${Boost_INCLUDE_DIRS})
@@ -36,18 +37,18 @@ else ()
 endif ()
 
 if (UNIX)
-	set (BOOST_LIBRARIES
-		${LIB_BOOST_SYSTEM}
-		${LIB_BOOST_PROGRAM_OPTIONS}
-		${LIB_BOOST_SERIALIZATION}
-		${LIB_BOOST_FILESYSTEM}
-		${LIB_BOOST_DATE_TIME}
-		${LIB_BOOST_IOSTREAMS}
-		${LIB_BOOST_REGEX}
-		${LIB_BOOST_CONTEXT}
-		${LIB_BOOST_COROUTINE}
-		${LIB_BOOST_CHRONO}
-		${LIB_BOOST_THREAD}
+    set (BOOST_LIBRARIES
+        ${LIB_BOOST_SYSTEM}
+        ${LIB_BOOST_PROGRAM_OPTIONS}
+        ${LIB_BOOST_SERIALIZATION}
+        ${LIB_BOOST_FILESYSTEM}
+        ${LIB_BOOST_DATE_TIME}
+        ${LIB_BOOST_IOSTREAMS}
+        ${LIB_BOOST_REGEX}
+        ${LIB_BOOST_CONTEXT}
+        ${LIB_BOOST_COROUTINE}
+        ${LIB_BOOST_CHRONO}
+        ${LIB_BOOST_THREAD}
     )
 
 	set(BOOST_UNIT_TEST_LIBRARIES boost_unit_test_framework)

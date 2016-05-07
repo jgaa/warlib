@@ -2,6 +2,7 @@ if (WITH_APIDOC)
     find_package(Doxygen)
     if (DOXYGEN_FOUND)
 
+
         set(DOXYGEN_INPUT Doxygen)
         set(DOXYGEN_OUTPUT doc/html)
 

@@ -88,6 +88,12 @@ struct ExceptionIoError : public ExceptionBase {};
 
 struct ExceptionBadState : public ExceptionBase {};
 
+/*! Data entry had no key value
+ *
+ * The key value is required to identify the object
+ */
+struct ExceptionNoKeyValue : public ExceptionBase {};
+
 } // namespace
 
 

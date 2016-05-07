@@ -36,6 +36,7 @@ if (NOT EMBEDDED_WARLIB)
 
     include(cmake_scripts/boost.cmake)
     include(cmake_scripts/pch.cmake)
+    include(cmake_scripts/doxygen.cmake)
 
     if (UNIX)
     # For now, assume we use g++/clang++
@@ -102,4 +103,3 @@ endif()
 message(STATUS "Writing the current warlib configuration to ${CONF_PATH}")
 CONFIGURE_FILE(war_config.h.template ${CONF_PATH})
 
-include(cmake_scripts/doxygen.cmake)
