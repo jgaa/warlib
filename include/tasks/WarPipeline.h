@@ -73,7 +73,6 @@ public:
         typename boost::asio::handler_type<handlerT, void()>::type handler_(
             std::forward<handlerT>(handler));
         boost::asio::async_result<decltype(handler_)> result(handler_);
-        //PostCoroutine(task, handler_);
         Post({[this, task, handler_]() {
             ExecTask_(task, true);
             using boost::asio::asio_handler_invoke;
@@ -111,7 +110,6 @@ public:
         typename boost::asio::handler_type<handlerT, void()>::type handler_(
             std::forward<handlerT>(handler));
         boost::asio::async_result<decltype(handler_)> result(handler_);
-        //PostCoroutine(task, handler_);
         PostWithTimer({[this, task, milliSeconds, handler_]() {
             ExecTask_(task, true);
             using boost::asio::asio_handler_invoke;
