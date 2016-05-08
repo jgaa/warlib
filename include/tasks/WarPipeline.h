@@ -66,16 +66,6 @@ public:
     void Post(const task_t &task);
     void Post(task_t &&task);
 
-    // Helper method
-    template <typename handlerT>
-    void PostCoroutine(const task_t& task, handlerT handler) {
-        Post({[this, task, handler]() {
-            ExecTask_(task, true);
-            using boost::asio::asio_handler_invoke;
-            asio_handler_invoke(handler, &handler);
-        }, "Resuming Coroutine"});
-    }
-
     /*! Post a task from a stackful co-routine.
      */
     template <typename handlerT>
@@ -83,7 +73,12 @@ public:
         typename boost::asio::handler_type<handlerT, void()>::type handler_(
             std::forward<handlerT>(handler));
         boost::asio::async_result<decltype(handler_)> result(handler_);
-        PostCoroutine(task, handler_);
+        //PostCoroutine(task, handler_);
+        Post({[this, task, handler_]() {
+            ExecTask_(task, true);
+            using boost::asio::asio_handler_invoke;
+            asio_handler_invoke(handler_, &handler_);
+        }, "Resuming Coroutine"});
         result.get();
     }
 
@@ -107,6 +102,23 @@ public:
     */
     void PostWithTimer(const task_t &task, const std::uint32_t milliSeconds);
     void PostWithTimer(task_t &&task, const std::uint32_t milliSeconds);
+
+    /*! Post a task from a stackful co-routine.
+     */
+    template <typename handlerT>
+    void PostWithTimer(const task_t& task, const std::uint32_t milliSeconds,
+                       handlerT&& handler) {
+        typename boost::asio::handler_type<handlerT, void()>::type handler_(
+            std::forward<handlerT>(handler));
+        boost::asio::async_result<decltype(handler_)> result(handler_);
+        //PostCoroutine(task, handler_);
+        PostWithTimer({[this, task, milliSeconds, handler_]() {
+            ExecTask_(task, true);
+            using boost::asio::asio_handler_invoke;
+            asio_handler_invoke(handler_, &handler_);
+        }, "Resuming Coroutine"}, milliSeconds);
+        result.get();
+    }
 
     /*! Returns the asio io-service */
     io_service_t &GetIoService() noexcept { return *io_service_.get(); }

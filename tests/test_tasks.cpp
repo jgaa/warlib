@@ -22,16 +22,23 @@ BOOST_AUTO_TEST_CASE(Test_Coroutine)
     unique_ptr<Pipeline> pipeline { new Pipeline("UnitTest_CR") };
 
     boost::asio::spawn(pipeline->GetIoService(),
-                       [&](boost::asio::yield_context yield){
+                       [&](boost::asio::yield_context yield) {
+
+        LOG_NOTICE << "Posting PostWithTimer";
+        pipeline->PostWithTimer({[&](){
+
+            LOG_NOTICE << "Got there....";
+
+        }, "PostWithTimer"}, 1000, yield);
 
         LOG_NOTICE << "Posting async wait.";
         pipeline->Post({[&](){
 
             LOG_NOTICE << "Going to sleep.";
-            std::this_thread::sleep_for(2s);
+            std::this_thread::sleep_for(1s);
 
             pipeline->Close();
-        }, "Async wait"}, yield);
+        }, "Post"}, yield);
 
         LOG_NOTICE << "Posting async wait.";
     });
