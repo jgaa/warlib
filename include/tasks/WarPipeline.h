@@ -7,11 +7,14 @@
 #include <functional>
 #include <memory>
 #include <future>
-#include <boost/asio.hpp>
-#include <boost/noncopyable.hpp>
 #include <cstdint>
 #include <iostream>
 #include <atomic>
+
+#include <boost/asio.hpp>
+#include <boost/asio/spawn.hpp>
+#include <boost/noncopyable.hpp>
+
 
 #include <war_asio.h>
 
@@ -62,6 +65,27 @@ public:
     */
     void Post(const task_t &task);
     void Post(task_t &&task);
+
+    // Helper method
+    template <typename handlerT>
+    void PostCoroutine(const task_t& task, handlerT handler) {
+        Post({[this, task, handler]() {
+            ExecTask_(task, true);
+            using boost::asio::asio_handler_invoke;
+            asio_handler_invoke(handler, &handler);
+        }, "Resuming Coroutine"});
+    }
+
+    /*! Post a task from a stackful co-routine.
+     */
+    template <typename handlerT>
+    void Post(const task_t& task, handlerT&& handler) {
+        typename boost::asio::handler_type<handlerT, void()>::type handler_(
+            std::forward<handlerT>(handler));
+        boost::asio::async_result<decltype(handler_)> result(handler_);
+        PostCoroutine(task, handler_);
+        result.get();
+    }
 
     /*! Run if possible, or post a task to the end of the task sequencer queue.
 

@@ -8,8 +8,35 @@
 
 using namespace std;
 using namespace war;
+using namespace chrono_literals;
 
 BOOST_AUTO_TEST_SUITE(Tasks_Unit_Tests)
+
+
+BOOST_AUTO_TEST_CASE(Test_Coroutine)
+{
+    log::LogEngine log;
+    log.AddHandler(log::LogToFile::Create("test_post_coroutine.log", true, "file",
+                                          log::LL_TRACE4, log::LA_DEFAULT_ENABLE | log::LA_THREADS) );
+
+    unique_ptr<Pipeline> pipeline { new Pipeline("UnitTest_CR") };
+
+    boost::asio::spawn(pipeline->GetIoService(),
+                       [&](boost::asio::yield_context yield){
+
+        LOG_NOTICE << "Posting async wait.";
+        pipeline->Post({[&](){
+
+            LOG_NOTICE << "Going to sleep.";
+            std::this_thread::sleep_for(2s);
+
+            pipeline->Close();
+        }, "Async wait"}, yield);
+
+        LOG_NOTICE << "Posting async wait.";
+    });
+    pipeline->WaitUntilClosed();
+}
 
 BOOST_AUTO_TEST_CASE(Test_Pipeline)
 {
