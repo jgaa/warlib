@@ -158,6 +158,17 @@ catch(const war::ExceptionBase& ex) { \
     func;\
 }
 
+#define WAR_CATCH_ALL_LOG(log_it) \
+catch(const war::ExceptionBase& ex) { \
+    LOG_ERROR_FN << "Caught exception [" << typeid(ex).name() << "]: " << log_it << ex;\
+} catch(const boost::exception& ex) { \
+    LOG_ERROR_FN << "Caught boost exception [" << typeid(ex).name() << "]: << log_it " << ex; \
+} catch(const std::exception& ex) { \
+    LOG_ERROR_FN << "Caught standad exception [" << typeid(ex).name() << "]:  << log_it " << ex; \
+} catch(...) { \
+    LOG_ERROR_FN << "Caught UNKNOWN exception! [" << typeid(std::current_exception()).name() << "]: " << log_it; \
+}
+
 #ifdef DEBUG
 #   define WAR_POINTER_ASSERT(ptr, classname) \
         WAR_ASSERT(ptr && (dynamic_cast<const classname *>(ptr) != nullptr))
