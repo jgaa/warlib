@@ -9,9 +9,7 @@ set(HEADERS
 	)
 
 if (WIN32)
-	ADD_MSVC_PRECOMPILED_HEADER(war_tests.h pch.cpp "${ACTUAL_SOURCES}")
-	add_definitions(-DWAR_PCH)
-	set(SOURCES ${ACTUAL_SOURCES} pch.cpp ${HEADERS} ${RESFILES})
+	set(SOURCES ${ACTUAL_SOURCES} ${HEADERS} ${RESFILES})
 else()
 	set(SOURCES ${ACTUAL_SOURCES})
 endif()

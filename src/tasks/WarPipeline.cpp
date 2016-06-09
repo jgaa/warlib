@@ -1,5 +1,6 @@
 
 #include "war_tasks.h" // PCH file
+#include <boost/asio.hpp>
 #include <boost/context/all.hpp>
 #include <boost/concept_check.hpp>
 #include "tasks/WarPipeline.h"

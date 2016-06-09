@@ -21,6 +21,9 @@ if (WIN32)
     # Msvc and possible some other Windows-compilers will link
     # to the correct libraries trough #pragma directives in boost headers.
 	#SET(BOOST_UNIT_TEST_FRAMEWORK libboost_test_exec_monitor-vc140-mt-sgd-1_57)
+	if (DEFINED BOOST_LIBRARYDIR)
+        link_directories(${BOOST_LIBRARYDIR} )
+    endif()
 else ()
     set(LIB_BOOST_PROGRAM_OPTIONS boost_program_options)
     set(LIB_BOOST_SERIALIZATION boost_serialization)
@@ -56,9 +59,9 @@ endif()
 
 if (UNIX)
 	set(THREADLIBS pthread)
-	set(SSL_LIBS ssl crypto)
+	#set(SSL_LIBS ssl crypto)
 else()
-	set(SSL_LIBS optimized libeay32MT debug libeay32MTd optimized ssleay32MT debug ssleay32MTd)
+	#set(SSL_LIBS optimized libeay32MT debug libeay32MTd optimized ssleay32MT debug ssleay32MTd)
 endif()
 
 set (DEFAULT_LIBRARIES
@@ -67,3 +70,4 @@ set (DEFAULT_LIBRARIES
     ${SSL_LIBS}
     ${BOOST_LIBRARIES}
     )
+
