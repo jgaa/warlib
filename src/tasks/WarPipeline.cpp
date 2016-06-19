@@ -128,9 +128,9 @@ void war::Pipeline::PostSynchronously(const task_t& task) {
     std::promise<void> promise;
     auto future = promise.get_future();
 
-    Post({[this, task, &promise]() mutable {
+    Dispatch({[this, task, &promise]() mutable {
         try {
-            ExecTask_(task, true, false);
+            ExecTask_(task, false, false);
             promise.set_value();
         } catch(...) {
             promise.set_exception(std::current_exception());

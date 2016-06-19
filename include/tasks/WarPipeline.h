@@ -74,7 +74,7 @@ public:
             std::forward<handlerT>(handler));
         boost::asio::async_result<decltype(handler_)> result(handler_);
         Post({[this, task, handler_]() {
-            ExecTask_(task, true);
+            ExecTask_(task, false);
             using boost::asio::asio_handler_invoke;
             asio_handler_invoke(handler_, &handler_);
         }, "Resuming Coroutine"});
@@ -91,7 +91,7 @@ public:
 
         Post({[this, task, &promise]() mutable {
             try {
-                ExecTask_(task, true, false);
+                ExecTask_(task, false, false);
             } catch(...) {
                 promise.set_exception(std::current_exception());
             }
