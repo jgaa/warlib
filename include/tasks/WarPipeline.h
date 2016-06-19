@@ -81,6 +81,32 @@ public:
         result.get();
     }
 
+    /*! Post a task with a future
+     *
+     * The caller is responsible for setting the value upon successful
+     * execution of the task.
+     */
+    template <typename PromiseT>
+    void PostWithPromise(const task_t& task, PromiseT& promise) {
+
+        Post({[this, task, &promise]() mutable {
+            try {
+                ExecTask_(task, true, false);
+            } catch(...) {
+                promise.set_exception(std::current_exception());
+            }
+        }, "Post with future"});
+    }
+
+    /*! Post a task and wait until it is executed.
+     *
+     * The caller is responsible for setting the value upon successful
+     * execution of the task.
+     *
+     */
+    void PostSynchronously(const task_t& task);
+
+
     /*! Run if possible, or post a task to the end of the task sequencer queue.
 
         This works as Post, except that it will run the task immediately if
@@ -158,7 +184,7 @@ public:
 private:
     using my_sync_t = std::promise<void>;
     void Run(my_sync_t& sync, int pinTo);
-    void ExecTask_(const task_t& task, bool counting);
+    void ExecTask_(const task_t& task, bool counting, bool autoCatch = true);
     void OnTimer_(
         const timer_t& timer,
         const task_t& task,

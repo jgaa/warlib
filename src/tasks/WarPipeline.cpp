@@ -114,7 +114,7 @@ void war::Pipeline::Post(task_t &&task)
         << task;
 
     AddingTask();
-    io_service_->post(bind(&war::Pipeline::ExecTask_, this, task, true));
+    io_service_->post(bind(&war::Pipeline::ExecTask_, this, task, true, true));
 }
 
 void war::Pipeline::Post(const task_t &task)
@@ -122,6 +122,24 @@ void war::Pipeline::Post(const task_t &task)
     WAR_LOG_FUNCTION;
     Post(task_t(task));
 }
+
+void war::Pipeline::PostSynchronously(const task_t& task) {
+
+    std::promise<void> promise;
+    auto future = promise.get_future();
+
+    Post({[this, task, &promise]() mutable {
+        try {
+            ExecTask_(task, true, false);
+            promise.set_value();
+        } catch(...) {
+            promise.set_exception(std::current_exception());
+        }
+    }, "Post Synchronously"});
+
+    future.get();
+}
+
 
 void war::Pipeline::Dispatch(const task_t &task)
 {
@@ -222,7 +240,7 @@ void war::Pipeline::AddingTask()
     }
 }
 
-void war::Pipeline::ExecTask_(const task_t& task, bool counting)
+void war::Pipeline::ExecTask_(const task_t& task, bool counting, bool autoCatch)
 {
     WAR_LOG_FUNCTION;
 
@@ -236,11 +254,17 @@ void war::Pipeline::ExecTask_(const task_t& task, bool counting)
         return;
     }
     LOG_TRACE3_F_FN(log::LA_THREADS) << "Executing task " << task;
-    try {
+
+    if (autoCatch) {
+        try {
+            task.first();
+            ++tasks_run_;
+        }
+        WAR_CATCH_ALL_E;
+    } else {
         task.first();
         ++tasks_run_;
     }
-    WAR_CATCH_ALL_E;
     LOG_TRACE3_F_FN(log::LA_THREADS) << "Finished executing task " << task;
 }
 
