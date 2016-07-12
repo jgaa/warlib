@@ -15,7 +15,7 @@ namespace war {
 #ifdef WIN32
 bool validate_filename_as_safe(const boost::filesystem::path& path);
 #else
-bool validate_filename_as_safe(const boost::filesystem::path& path) {
+inline bool validate_filename_as_safe(const boost::filesystem::path& path) {
     return true;
 }
 #endif
