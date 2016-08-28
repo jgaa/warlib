@@ -206,7 +206,7 @@ void war::Pipeline::Close()
     if (io_service_) {
         LOG_TRACE1_F_FN(log::LA_THREADS) << "Posting Close on Pipeline "
             << log::Esc(name_);
-        io_service_->dispatch([this] {
+        io_service_->post([this] {
             if (!closed_) {
                 LOG_DEBUG << "Shutting down Pipeline " << log::Esc(name_);
                 closed_ = true;

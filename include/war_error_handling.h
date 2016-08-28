@@ -113,6 +113,11 @@ struct ExceptionNoKeyValue : public ExceptionBase {};
 
 #define WAR_THROW_NOT_IMPLEMENTED WAR_THROW_T(ExceptionNotImplemented, "Not Implemented")
 
+#define WAR_LOG_EXCEPTION_NAME(ex) typeid(ex).name()
+
+#define WAR_LOG_EXCEPTION(level, ex) \
+    level << "Caught exception [" << typeid(ex).name() << "]: " << ex;
+
 #define WAR_CATCH_NORMAL \
 catch(const war::ExceptionBase& ex) { \
     LOG_WARN_FN << "Caught exception [" << typeid(ex).name() << "]: " << ex; \
