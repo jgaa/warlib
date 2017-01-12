@@ -23,6 +23,9 @@ if (NOT DEFINED WAR_WITH_UNIT_TESTS)
 	option(WAR_WITH_UNIT_TESTS "Enable Unit Testing" ON)
 endif()
 
+if (WIN32 AND NOT DEFINED WAR_USE_WIN32_DEFAULTS)
+    option(WAR_USE_WIN32_DEFAULTS "Use C:/devel ... for openssl, zlib" ON)
+endif()
 
 
 # We create a configuration file so that other code that
@@ -32,7 +35,36 @@ set(CONF_PATH ${WARLIB_ROOT_DIR}/include/war_config.h)
 message(STATUS "Using ${CMAKE_CXX_COMPILER}")
 
 if (NOT EMBEDDED_WARLIB)
+
+    if (NOT OPENSSL_ROOT_DIR AND WIN32 AND WAR_USE_WIN32_DEFAULTS)
+        # Cmake's find_package(OpenSSL) is badly broken, and fails to work
+        # with the default openssl build on windows.
+        # In order to resolve the problems, make a 64 (or 32) bit build of
+        # openssl and copy inc32/openssl to ${OPENSSL_ROOT_DIR}/include, and
+        # the content of out32dll to ${OPENSSL_ROOT_DIR}/lib/VC
+        # Make sure to also add ${OPENSSL_ROOT_DIR}/lib/VC to your path
+        # when you run programs compiled with restc_cpp under windows, or
+        # copy the dll's to the directory with your binaries.
+        # (Using 3rd party C libraries under Windows with their own build systems
+        # is a major pain-point. I'm planning to see if I can use Windows crypto
+        # library in sted of openssl, (or somerthing that can be built as a
+        # submodule to git with cmake)).
+        set(OPENSSL_ROOT_DIR C:/devel/openssl)
+        message(STATUS "Setting OPENSSL_ROOT_DIR to ${OPENSSL_ROOT_DIR}")
+    endif()
+
     find_package(OpenSSL REQUIRED)
+
+    if (UNIX)
+        set(THREADLIBS pthread)
+    endif()
+
+    set (DEFAULT_LIBRARIES
+        ${DEFAULT_LIBRARIES}
+        ${THREADLIBS}
+        ${OPENSSL_LIBRARIES}
+        ${ZLIB_LIBRARIES}
+    )
 
     include(cmake_scripts/boost.cmake)
     include(cmake_scripts/pch.cmake)
@@ -61,6 +93,7 @@ endif()
 add_subdirectory(src)
 
 if (WAR_WITH_UNIT_TESTS)
+    enable_testing()
     add_subdirectory(tests)
 endif()
 
