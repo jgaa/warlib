@@ -53,8 +53,6 @@ if (NOT EMBEDDED_WARLIB)
         message(STATUS "Setting OPENSSL_ROOT_DIR to ${OPENSSL_ROOT_DIR}")
     endif()
 
-    find_package(OpenSSL REQUIRED)
-
     if (UNIX)
         set(THREADLIBS pthread)
     endif()
@@ -63,7 +61,6 @@ if (NOT EMBEDDED_WARLIB)
         ${DEFAULT_LIBRARIES}
         ${THREADLIBS}
         ${OPENSSL_LIBRARIES}
-        ${ZLIB_LIBRARIES}
     )
 
     include(cmake_scripts/boost.cmake)
