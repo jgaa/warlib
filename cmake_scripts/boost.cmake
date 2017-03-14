@@ -84,5 +84,9 @@ if (UNIX)
         )
 endif()
 
+# Asio trigger deprecation warnings
+add_definitions(-DBOOST_COROUTINES_NO_DEPRECATION_WARNING=1)
+add_definitions(-DBOOST_COROUTINE_NO_DEPRECATION_WARNING=1)
+
 message(STATUS "Default libraries: ${DEFAULT_LIBRARIES}")
 
