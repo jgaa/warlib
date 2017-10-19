@@ -1,12 +1,8 @@
 # Main project definition for warlibs
 #
-# This project is currently being developed with Debian "testing", using the
+# This project is currently being developed with Debian "stretch", using the
 # latest clang++ and g++ compilers and libraries.
 #
-# Supported compilers:
-#  - Clang 3.5.1 [Tested with Debian jessie]
-#  - g++ 4.9     [Tested with Debian jessie]
-#  - Microsoft Visual Studio 2015 preview [Tested with Windows 7]
 
 cmake_minimum_required(VERSION 3.0)
 project (warlib)
@@ -93,35 +89,6 @@ if (WAR_WITH_UNIT_TESTS)
     enable_testing()
     add_subdirectory(tests)
 endif()
-
-# if (OPENSSL_ROOT)
-# 	include_directories(${OPENSSL_ROOT}/include)
-# 	link_directories(${OPENSSL_ROOT}/lib/VC)
-# endif()
-
-
-
-# if (BOOST_ROOT)
-# 	if (NOT BOOST_INCLUDE_DIR)
-# 		set(BOOST_INCLUDE_DIR ${BOOST_ROOT})
-# 	endif()
-#
-# 	if (NOT BOOST_LIBRARY_DIRS)
-# 		set(BOOST_LIBRARY_DIRS ${BOOST_ROOT}/stage/lib CACHE PATH "path to prebuilt library")
-# 	endif()
-# else()
-#     message(STATUS "No BOOST_ROOT set. Assuming that boost is installed and available for the compiler")
-# endif()
-#
-# if (BOOST_INCLUDE_DIR)
-# 	message(STATUS "Setting boost include-dir to: ${BOOST_INCLUDE_DIR}")
-# 	include_directories(${BOOST_INCLUDE_DIR})
-# endif()
-#
-# if (BOOST_LIBRARY_DIRS)
-# 	message(STATUS "Setting boost libdir to: ${BOOST_LIBRARY_DIRS}")
-# 	link_directories(${BOOST_LIBRARY_DIRS} )
-# endif()
 
 
 if (WIN32)
