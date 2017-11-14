@@ -12,7 +12,7 @@ set(HEADERS
     )
 
 if (WIN32)
-	set(SOURCES ${ACTUAL_SOURCES} ${HEADERS} ${RESFILES})
+    set(SOURCES ${ACTUAL_SOURCES} ${HEADERS} ${RESFILES})
 else()
     set(SOURCES ${ACTUAL_SOURCES})
 endif()

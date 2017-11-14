@@ -3,8 +3,8 @@
 #include <ctime>
 /* Practical stuff for implementation use */
 
-#include "war_basics.h"
-#include "war_debug_helper.h"
+#include <warlib/basics.h>
+#include <warlib/debug_helper.h>
 
 #define WAR_LOCK std::lock_guard<std::mutex> __war_lock(lock_)
 #define WAR_UNLOCK __war_lock.unlock();

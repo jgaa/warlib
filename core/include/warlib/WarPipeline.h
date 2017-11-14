@@ -2,7 +2,7 @@
 #ifndef WAR_PIPELINE_H
 #define WAR_PIPELINE_H
 
-#include <war_basics.h>
+#include <warlib/basics.h>
 #include <thread>
 #include <functional>
 #include <memory>
@@ -16,7 +16,7 @@
 #include <boost/noncopyable.hpp>
 
 
-#include <war_asio.h>
+#include <warlib/asio.h>
 
 namespace war {
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <thread>
-#include <log/WarLog.h>
+#include <warlib/WarLog.h>
 
 namespace war {
 

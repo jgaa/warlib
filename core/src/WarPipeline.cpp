@@ -1,11 +1,12 @@
 
-#include "war_tasks.h" // PCH file
+
+#include <string>
 #include <boost/asio.hpp>
 #include <boost/context/all.hpp>
 #include <boost/concept_check.hpp>
-#include "tasks/WarPipeline.h"
-#include "log/WarLog.h"
-#include "war_debug_helper.h"
+#include <warlib/WarPipeline.h>
+#include <warlib/WarLog.h>
+#include <warlib/debug_helper.h>
 
 #ifndef WIN32
 #   include <pthread.h>

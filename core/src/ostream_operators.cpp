@@ -1,8 +1,8 @@
 // General ostream operators
 
 
-#include "log/WarLog.h"
-#include "war_asio.h"
+#include <warlib/WarLog.h>
+
 
 std::ostream& operator << (std::ostream& out, const std::exception& ex)
 {

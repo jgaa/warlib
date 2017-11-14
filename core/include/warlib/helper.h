@@ -1,6 +1,6 @@
 #pragma once
 
-#include <war_error_handling.h>
+#include <warlib/error_handling.h>
 #include <boost/lexical_cast.hpp>
 
 namespace war {

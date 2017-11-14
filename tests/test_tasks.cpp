@@ -2,7 +2,7 @@
 #define BOOST_TEST_MODULE WarlibTests
 #include "war_tests.h"
 #include <chrono>
-#include "tasks/WarPipeline.h"
+#include <warlib/WarPipeline.h>
 
 #include <boost/test/unit_test.hpp>
 

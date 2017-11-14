@@ -4,8 +4,8 @@
 #include <iomanip>
 #include <thread>
 
-#include "log/WarLog.h"
-#include "war_impl.h"
+#include <warlib/WarLog.h>
+#include <warlib/impl.h>
 
 #include <boost/filesystem.hpp>
 

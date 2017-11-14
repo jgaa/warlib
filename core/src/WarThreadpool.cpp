@@ -1,13 +1,12 @@
-#include "war_tasks.h" // PCH file
 
 #include <algorithm>
 #include <thread>
 
 #include <boost/asio.hpp>
 
-#include "war_impl.h"
-#include "tasks/WarThreadpool.h"
-#include "log/WarLog.h"
+#include <warlib/impl.h>
+#include <warlib/WarThreadpool.h>
+#include <warlib/WarLog.h>
 
 using namespace std;
 using namespace war;

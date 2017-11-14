@@ -1,6 +1,6 @@
 #pragma once
 
-#include "war_error_handling.h"
+#include <warlib/error_handling.h>
 
 #ifdef WIN32
 #	include <windows.h>

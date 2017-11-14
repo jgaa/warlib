@@ -1,7 +1,7 @@
 #pragma once
 
-#ifdef _MSC_VER 
-#   include "win/war_msvc_pragmas.h"
+#ifdef _MSC_VER
+#   include <warlib/win/msvc_pragmas.h>
 #endif
 
 #include <functional>
@@ -32,4 +32,4 @@ typedef std::function<void ()> war_func_t;
 #	endif
 #endif
 
-#include "war_error_handling.h"
+#include <warlib/error_handling.h>

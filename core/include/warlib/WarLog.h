@@ -14,7 +14,7 @@
 #include <chrono>
 #include <boost/system/error_code.hpp>
 #include <boost/utility/string_ref.hpp>
-#include <war_basics.h>
+#include <warlib/basics.h>
 
 
 #define __WAR_LOG_WITH_LEVEL_AND_FILTER(level, filter) war::log::LogEngine::IsRelevant(level, filter) && war::log::Log(level, filter).Get()
@@ -329,7 +329,7 @@ public:
         \exception Exception on invalid name.
     */
     static LogLevel GetLevelFromName(const std::string& name) noexcept;
-    
+
     static LogEngine& GetInstance() {
         WAR_ASSERT (instance_);
         return *instance_;

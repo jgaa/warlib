@@ -11,6 +11,6 @@
 #include <boost/test/unit_test.hpp>
 
 #include "war_basics.h"
-#include "log/WarLog.h"
-#include "war_asio.h"
+#include <warlib/WarLog.h>
+#include 
 
