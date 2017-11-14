@@ -4,15 +4,15 @@
 #include <cstdint>
 #include <chrono>
 
-#include <tasks/WarThreadpool.h>
-#include <log/WarLog.h>
+#include <warlib/WarThreadpool.h>
+#include <warlib/WarLog.h>
 
 #include <boost/program_options.hpp>
 
 using namespace std;
 using namespace war;
 
-war::Threadpool::pinning_t pinning;
+Threadpool::pinning_t pinning;
 
 class Test
 {

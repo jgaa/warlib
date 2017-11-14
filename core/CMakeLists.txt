@@ -30,17 +30,10 @@ target_include_directories(warcore PUBLIC
 
 set(CMAKE_CXX_STANDARD 14)
 
-# target_compile_features(warcore
-#     PUBLIC cxx_auto_type cxx_raw_string_literals cxx_strong_enums cxx_user_literals
-#     )
-
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DBOOST_COROUTINES_NO_DEPRECATION_WARNING=1)
 target_compile_definitions(${PROJECT_NAME} PUBLIC -DBOOST_COROUTINE_NO_DEPRECATION_WARNING=1)
 
-
-target_link_libraries(warcore
-    boost
-    )
+target_link_libraries(${PROJECT_NAME} PUBLIC ${Boost_LIBRARIES})
 
 install(TARGETS warcore EXPORT MyLibraryConfig
     ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
@@ -48,3 +41,27 @@ install(TARGETS warcore EXPORT MyLibraryConfig
     )
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
+if (WAR_WITH_UNIT_TESTS)
+
+    enable_testing()
+
+    # Unit tests
+    add_executable(warcore_test_tasks
+        tests/test_tasks.cpp)
+    target_link_libraries(warcore_test_tasks
+        boost
+        warcore)
+    add_dependencies(warcore_test_tasks externalLest)
+    target_include_directories(warcore_test_tasks PRIVATE tests)
+    add_and_run_test(warcore_test_tasks ${CMAKE_CURRENT_BINARY_DIR})
+
+    # Performance tests
+    add_executable(warcore_perf_test
+        tests/perftests.cpp)
+    target_link_libraries(warcore_perf_test
+        boost
+        warcore)
+    add_dependencies(warcore_perf_test externalLest)
+    target_include_directories(warcore_perf_test PRIVATE tests)
+    add_test(warcore_perf_test warcore_perf_test)
+endif()

@@ -3,17 +3,18 @@
 #include "war_tests.h"
 #include <chrono>
 #include <warlib/WarPipeline.h>
+#include <warlib/basics.h>
+#include <warlib/WarLog.h>
 
-#include <boost/test/unit_test.hpp>
 
 using namespace std;
 using namespace war;
 using namespace chrono_literals;
 
-BOOST_AUTO_TEST_SUITE(Tasks_Unit_Tests)
 
+const lest::test specification[] = {
 
-BOOST_AUTO_TEST_CASE(Test_Coroutine)
+STARTCASE(Test_Coroutine)
 {
     log::LogEngine log;
     log.AddHandler(log::LogToFile::Create("test_post_coroutine.log", true, "file",
@@ -43,9 +44,9 @@ BOOST_AUTO_TEST_CASE(Test_Coroutine)
         LOG_NOTICE << "Posting async wait.";
     });
     pipeline->WaitUntilClosed();
-}
+} ENDCASE
 
-BOOST_AUTO_TEST_CASE(Test_Pipeline)
+STARTCASE(Test_Pipeline)
 {
 
     log::LogEngine log;
@@ -60,8 +61,8 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
         promise<bool> result;
         pipeline->Post({[&] {
             try {
-                BOOST_CHECK(pipeline->IsPipelineThread());
-                BOOST_CHECK(pipeline->GetCount() == 0);
+                EXPECT(pipeline->IsPipelineThread());
+                EXPECT(pipeline->GetCount() == 0);
                 result.set_value(true);
             }
             catch (...) {
@@ -69,7 +70,8 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
             }
         }, "Testing Post()"});
 
-        BOOST_CHECK_MESSAGE(result.get_future().get(), "Post()");
+        // Post
+        EXPECT(result.get_future().get());
     }
 
     // Test that a callback is called at all
@@ -77,8 +79,8 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
         promise<bool> result;
         pipeline->Dispatch({[&] {
             try {
-                BOOST_CHECK(pipeline->IsPipelineThread());
-                BOOST_CHECK(pipeline->GetCount() == 0);
+                EXPECT(pipeline->IsPipelineThread());
+                EXPECT(pipeline->GetCount() == 0);
                 result.set_value(true);
             }
             catch (...) {
@@ -86,7 +88,8 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
             }
         }, "Testing Dispatch()"});
 
-        BOOST_CHECK_MESSAGE(result.get_future().get(), "Dispatch()");
+        // Dispatch()
+        EXPECT(result.get_future().get());
     }
 
     // Test that the timer works
@@ -102,13 +105,15 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
         const bool success = result.get_future().get();
         const auto end = chrono::high_resolution_clock::now();
         const auto ms = chrono::duration_cast<chrono::milliseconds>(end - start).count();
-        BOOST_CHECK_MESSAGE(success && (ms >= sleep_period),
-                            "PostWithTimer(): " << ms << " >= " << sleep_period);
+
+        //PostWithTimer
+        EXPECT(success);
+        EXPECT(ms >= sleep_period);
     }
 
     // Test that tasks gets queued
     {
-        BOOST_CHECK(pipeline->GetCount() == 0);
+        EXPECT(pipeline->GetCount() == 0);
 
         {
             mutex barrier;
@@ -127,7 +132,7 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
             }, "Lock the sequencer"});
 
             sync.get_future().get();
-            BOOST_CHECK(pipeline->GetCount() == 0);
+            EXPECT(pipeline->GetCount() == 0);
 
             // Queue max number of tasks == capacity
             for (size_t i = 0; i < pipeline->GetCapacity() - 2; ++i) {
@@ -145,12 +150,12 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
             done_sync.get_future().get();
 
         }
-        BOOST_CHECK(pipeline->GetCount() == 0);
+        EXPECT(pipeline->GetCount() == 0);
     }
 
     // Test capacity
     {
-        BOOST_CHECK(pipeline->GetCount() == 0);
+        EXPECT(pipeline->GetCount() == 0);
 
         {
             mutex barrier;
@@ -169,7 +174,7 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
             }, "Lock the sequencer"});
 
             sync.get_future().get();
-            BOOST_CHECK(pipeline->GetCount() == 0);
+            EXPECT(pipeline->GetCount() == 0);
 
             // Queue max number of tasks == capacity
             for (size_t i = 0; i < pipeline->GetCapacity() -1; ++i) {
@@ -181,7 +186,7 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
                 done_sync.set_value();
             }, "last task"});
 
-            BOOST_CHECK_THROW(pipeline->Post(my_task), Pipeline::ExceptionCapacityExceeded);
+            EXPECT_THROWS_AS(pipeline->Post(my_task), Pipeline::ExceptionCapacityExceeded);
 
             lock.unlock(); // Let the taks complete
 
@@ -189,7 +194,7 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
             done_sync.get_future().get();
 
         }
-        BOOST_CHECK(pipeline->GetCount() == 0);
+        EXPECT(pipeline->GetCount() == 0);
     }
 
     // Test dispatch
@@ -219,20 +224,27 @@ BOOST_AUTO_TEST_CASE(Test_Pipeline)
         while (levels) {
             this_thread::sleep_for(chrono::milliseconds(30));
         }
-        BOOST_CHECK(pipeline->GetCount() == 0);
+        EXPECT(pipeline->GetCount() == 0);
         lock.unlock();
 
         done_sync.get_future().get(); // Wait for the tasks for finish
     }
 
-    BOOST_CHECK_MESSAGE(pipeline->IsPipelineThread() == false, "IsPipelineThread() is broken" );
-    BOOST_CHECK_MESSAGE(pipeline->IsClosed() == false, "IsClosed() returned true before Close()");
+    // IsPipelineThread() is broken
+    EXPECT_NOT(pipeline->IsPipelineThread());
+    // IsClosed() returned true before Close()
+    EXPECT_NOT(pipeline->IsClosed());
     pipeline->Close();
     pipeline->WaitUntilClosed();
-    BOOST_CHECK(pipeline->GetCount() == 0);
-    BOOST_CHECK_MESSAGE(pipeline->IsClosed(), "IsClosed() returned false after Close()");
+    EXPECT(pipeline->GetCount() == 0);
+    // IsClosed() returned false after Close()
+    EXPECT(pipeline->IsClosed());
     pipeline.reset();
+} ENDCASE
+}; //lest
+
+
+int main( int argc, char * argv[] )
+{
+    return lest::run( specification, argc, argv );
 }
-
-BOOST_AUTO_TEST_SUITE_END()
-
