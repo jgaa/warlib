@@ -43,3 +43,6 @@ endif()
 
 CONFIGURE_FILE(config.h.template ${CMAKE_BINARY_DIR}/generated-include/${PROJECT_NAME}/config.h)
 
+install(DIRECTORY ${CMAKE_BINARY_DIR}/generated-include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(EXPORT warlib-targets DESTINATION lib/warlib)
+export(TARGETS warcore FILE warlib-exports.cmake)
