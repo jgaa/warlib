@@ -6,10 +6,9 @@
 
 namespace war {
 
-using io_service_t = boost::asio::io_service;
+using io_context_t = boost::asio::io_context;
 using timer_t = std::shared_ptr<boost::asio::deadline_timer>;
 using resolver_t = std::shared_ptr<boost::asio::ip::tcp::resolver>;
-
 }
 
 // class ostream;

@@ -31,7 +31,7 @@ war::Pipeline::Pipeline(const string &name,
                         int id,
                         const std::size_t capacity,
                         int pinTo)
-: io_service_ { new boost::asio::io_service }, name_ (name)
+: io_context_ { new io_context_t }, name_ (name)
 , closed_ {false}, capacity_ { capacity }, count_ {0}
 , closing_ {false}, id_ {id}
 {
@@ -78,7 +78,7 @@ void war::Pipeline::Run(my_sync_t & sync, const int pinTo)
 
     try {
         debug::SetThreadName(name_);
-        work_ = make_unique<boost::asio::io_service::work>(*io_service_);
+        work_ = make_unique<boost::asio::io_context::work>(*io_context_);
     }
     catch (...) {
         LOG_ERROR_FN << "Caught exception! Aborting this operation!";
@@ -91,7 +91,7 @@ void war::Pipeline::Run(my_sync_t & sync, const int pinTo)
     LOG_DEBUG_F_FN(log::LA_THREADS) << "Starting Pipeline thread loop "
         << log::Esc(name_);
     try {
-        io_service_->run();
+        io_context_->run();
     }
     WAR_CATCH_ALL_E;
 
@@ -115,7 +115,7 @@ void war::Pipeline::Post(task_t &&task)
         << task;
 
     AddingTask();
-    io_service_->post(bind(&war::Pipeline::ExecTask_, this, task, true, true));
+    io_context_->post(bind(&war::Pipeline::ExecTask_, this, task, true, true));
 }
 
 void war::Pipeline::Post(const task_t &task)
@@ -191,7 +191,7 @@ void war::Pipeline::PostWithTimer(task_t &&task,
         << " on Pipeline " << log::Esc(name_)
         << " for execution in " << milliSeconds << " milliseconds.";
 
-    timer_t timer(new boost::asio::deadline_timer(*io_service_));
+    timer_t timer(new boost::asio::deadline_timer(*io_context_));
     timer->expires_from_now(boost::posix_time::milliseconds(milliSeconds));
     timer->async_wait(bind(&war::Pipeline::OnTimer_, this, timer,
                            move(task), placeholders::_1));
@@ -204,15 +204,15 @@ void war::Pipeline::Close()
     if (closing_)
         return;
 
-    if (io_service_) {
+    if (io_context_) {
         LOG_TRACE1_F_FN(log::LA_THREADS) << "Posting Close on Pipeline "
             << log::Esc(name_);
-        io_service_->post([this] {
+        io_context_->post([this] {
             if (!closed_) {
                 LOG_DEBUG << "Shutting down Pipeline " << log::Esc(name_);
                 closed_ = true;
                 work_.reset();
-                io_service_->stop();
+                io_context_->stop();
                 LOG_DEBUG << "Finisheed shutting down Pipeline "
                     << log::Esc(name_);
             }

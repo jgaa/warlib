@@ -21,7 +21,7 @@
 namespace war {
 
 
-/*! Single-thread task sequencer, timer and asio io_service instance
+/*! Single-thread task sequencer, timer and asio io_context instance
 
     This class is used as a sequential task sequencer, timer
     and IO object for boost::asio. By assigning a connection
@@ -145,7 +145,7 @@ public:
     }
 
     /*! Returns the asio io-service */
-    io_service_t &GetIoService() noexcept { return *io_service_.get(); }
+    io_context_t &GetIoService() noexcept { return *io_context_.get(); }
 
     /*! Closes the task-sequenser.
 
@@ -191,8 +191,8 @@ private:
         const boost::system::error_code& ec);
     void AddingTask();
 
-    std::unique_ptr<boost::asio::io_service> io_service_;
-    std::unique_ptr<boost::asio::io_service::work> work_;
+    std::unique_ptr<io_context_t> io_context_;
+    std::unique_ptr<boost::asio::io_context::work> work_;
     std::unique_ptr<std::thread> thread_;
     const std::string name_;
     std::atomic<bool> closed_;

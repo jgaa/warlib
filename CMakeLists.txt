@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.0)
-project (warlib VERSION 2.1 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.6)
+project (warlib VERSION 2.2 LANGUAGES CXX)
 
 set (WARLIB_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -20,7 +20,7 @@ include(cmake_scripts/external-projects.cmake)
 include(cmake_scripts/add_and_run_test.cmake)
 
 # Include Boost as an imported target
-find_package(Boost 1.50 REQUIRED COMPONENTS
+find_package(Boost 1.65 REQUIRED COMPONENTS
     system
     program_options
     filesystem
