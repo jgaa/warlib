@@ -25,6 +25,25 @@ STARTCASE(Test_Coroutine)
     boost::asio::spawn(pipeline->GetIoService(),
                        [&](boost::asio::yield_context yield) {
 
+        boost::system::error_code ec;
+        LOG_NOTICE << "Posting PostWithTimer";
+        pipeline->PostWithTimer({[&](){
+
+            LOG_NOTICE << "Got there....";
+
+        }, "PostWithTimer"}, 1000, yield[ec]);
+
+        LOG_NOTICE << "Posting async wait.";
+        pipeline->Post({[&](){
+
+            LOG_NOTICE << "Going to sleep.";
+            std::this_thread::sleep_for(1s);
+
+            pipeline->Close();
+        }, "Post"}, yield[ec]);
+
+        LOG_NOTICE << "Posting async wait.";
+
         LOG_NOTICE << "Posting PostWithTimer";
         pipeline->PostWithTimer({[&](){
 
@@ -222,6 +241,7 @@ STARTCASE(Test_Pipeline)
 
         pipeline->Post(recurse);
         while (levels) {
+
             this_thread::sleep_for(chrono::milliseconds(30));
         }
         EXPECT(pipeline->GetCount() == 0);

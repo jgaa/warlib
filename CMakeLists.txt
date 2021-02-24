@@ -19,6 +19,8 @@ message(STATUS "Using ${CMAKE_CXX_COMPILER}")
 include(cmake_scripts/external-projects.cmake)
 include(cmake_scripts/add_and_run_test.cmake)
 
+find_package( Threads )
+
 # Include Boost as an imported target
 find_package(Boost 1.65 REQUIRED COMPONENTS
     system

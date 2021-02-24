@@ -22,6 +22,7 @@ set(HEADERS
     )
 
 add_library(warcore ${SOURCES})
+add_dependencies(warcore boost)
 
 target_include_directories(warcore PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -44,14 +45,17 @@ install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 if (WAR_WITH_UNIT_TESTS)
 
+    message("Boost_LIBRARIES=${Boost_LIBRARIES}")
+
     enable_testing()
 
     # Unit tests
     add_executable(warcore_test_tasks
         tests/test_tasks.cpp)
     target_link_libraries(warcore_test_tasks
+        warcore
         boost
-        warcore)
+        ${CMAKE_THREAD_LIBS_INIT})
     add_dependencies(warcore_test_tasks externalLest)
     target_include_directories(warcore_test_tasks PRIVATE tests)
     add_and_run_test(warcore_test_tasks ${CMAKE_CURRENT_BINARY_DIR})
@@ -60,8 +64,9 @@ if (WAR_WITH_UNIT_TESTS)
     add_executable(warcore_perf_test
         tests/perftests.cpp)
     target_link_libraries(warcore_perf_test
+        warcore
         boost
-        warcore)
+        ${CMAKE_THREAD_LIBS_INIT})
     add_dependencies(warcore_perf_test externalLest)
     target_include_directories(warcore_perf_test PRIVATE tests)
     add_test(warcore_perf_test warcore_perf_test)
