@@ -14,6 +14,10 @@ if (NOT DEFINED WAR_WITH_UNIT_TESTS)
     endif()
 endif()
 
+if(NOT DEFINED WAR_BOOST_VERSION)
+    set(WAR_BOOST_VERSION 1.65)
+endif()
+
 message(STATUS "Using ${CMAKE_CXX_COMPILER}")
 
 include(cmake_scripts/external-projects.cmake)
@@ -22,7 +26,7 @@ include(cmake_scripts/add_and_run_test.cmake)
 find_package( Threads )
 
 # Include Boost as an imported target
-find_package(Boost 1.65 REQUIRED COMPONENTS
+find_package(Boost ${WAR_BOOST_VERSION} REQUIRED COMPONENTS
     system
     program_options
     filesystem
