@@ -18,6 +18,11 @@ if(NOT DEFINED WAR_BOOST_VERSION)
     set(WAR_BOOST_VERSION 1.65)
 endif()
 
+option(BOOST_ERROR_CODE_HEADER_ONLY "Work-around for another boost issue" ON)
+if (BOOST_ERROR_CODE_HEADER_ONLY)
+    add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY)
+endif()
+
 message(STATUS "Using ${CMAKE_CXX_COMPILER}")
 
 include(cmake_scripts/external-projects.cmake)
