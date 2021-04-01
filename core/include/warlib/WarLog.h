@@ -89,7 +89,7 @@ struct Esc
 {
     Esc(const boost::string_ref& v) : val_(v) {};
     Esc(const std::string& v) : val_(v) {};
-    Esc(const char *v) : val_(v) {};
+    Esc(const char *v) : val_(v, v ? strlen(v) : 0) {};
 
     const boost::string_ref& GetVal() const {
         return val_;
