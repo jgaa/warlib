@@ -2,7 +2,11 @@
 
 #include <string>
 #include <boost/asio.hpp>
-#include <boost/context/all.hpp>
+
+#if BOOST_VERSION < 107000
+#  include <boost/context/all.hpp>
+#endif
+
 #include <boost/concept_check.hpp>
 #include <warlib/WarPipeline.h>
 #include <warlib/WarLog.h>
@@ -221,7 +225,7 @@ void war::Pipeline::Close()
     }
 }
 
-void war::Pipeline::OnTimer_(const timer_t& timer, const task_t &task, const boost::system::error_code& ec)
+void war::Pipeline::OnTimer_(const timer_t& /*timer*/, const task_t &task, const boost::system::error_code& ec)
 {
     WAR_LOG_FUNCTION;
     if (!ec) {

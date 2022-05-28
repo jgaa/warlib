@@ -23,6 +23,9 @@ if (BOOST_ERROR_CODE_HEADER_ONLY)
     add_definitions(-DBOOST_ERROR_CODE_HEADER_ONLY=1)
 endif()
 
+# Asio use depricated headers. Remove the spam warnings...
+add_definitions(-DBOOST_ALLOW_DEPRECATED_HEADERS=1)
+
 message(STATUS "Using ${CMAKE_CXX_COMPILER}")
 
 include(cmake_scripts/external-projects.cmake)
