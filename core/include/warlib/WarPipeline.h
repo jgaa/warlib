@@ -69,24 +69,25 @@ public:
     template <typename Token>
     auto Post(const task_t& task, Token&& token) {
 #if BOOST_VERSION >= 107000
-    using result_type = typename boost::asio::async_result<std::decay_t<Token>,
-        void(boost::system::error_code)>;
-    typename result_type::completion_handler_type handler(std::forward<Token>(token));
-
-    result_type result(handler);
+    return boost::asio::async_compose<Token, void(boost::system::error_code e)>
+        ([this, &task](auto& self) mutable {
+            boost::asio::post(io_context_->get_executor(), [this, self=std::move(self), task=std::move(task)]() mutable {
+                ExecTask_(task, true, true);
+                self.complete({});
+            });
+        }, token, io_context_->get_executor());
 #else
     typename boost::asio::handler_type<Token, void(boost::system::error_code)>::type
                  handler(std::forward<Token>(token));
 
     boost::asio::async_result<decltype (handler)> result (handler);
+    Post({[this, task, handler]() mutable {
+              ExecTask_(task, false);
+              handler(boost::system::error_code{});
+          }, "Resuming Coroutine"});
+
+    return result.get ();
 #endif
-
-        Post({[this, task, handler]() mutable {
-                  ExecTask_(task, false);
-                  handler(boost::system::error_code{});
-        }, "Resuming Coroutine"});
-
-        return result.get ();
     }
 
     /*! Post a task with a future
@@ -138,24 +139,28 @@ public:
 
     template <typename Token>
     auto PostWithTimer(const task_t& task, const std::uint32_t milliSeconds, Token&& token) {
-    #if BOOST_VERSION >= 107000
-        using result_type = typename boost::asio::async_result<std::decay_t<Token>,
-            void(boost::system::error_code)>;
-        typename result_type::completion_handler_type handler(std::forward<Token>(token));
-
-        result_type result(handler);
+#if BOOST_VERSION >= 107000
+        return boost::asio::async_compose<Token, void(boost::system::error_code e)>
+            ([this, milliSeconds, &task](auto& self) mutable {
+                auto timer = std::make_shared<boost::asio::deadline_timer>(*io_context_);
+                timer->expires_from_now(boost::posix_time::milliseconds(milliSeconds));
+                timer->async_wait([this, timer, task=std::move(task), self=std::move(self)](boost::system::error_code ec) mutable {
+                    OnTimer_({}, task, ec);
+                    self.complete(ec);
+                });
+            }, token, io_context_->get_executor());
 #else
         typename boost::asio::handler_type<Token, void(boost::system::error_code)>::type
                      handler(std::forward<Token>(token));
 
         boost::asio::async_result<decltype (handler)> result (handler);
-#endif
         PostWithTimer({[this, task, handler]() mutable {
-            ExecTask_(task, true);
-            handler(boost::system::error_code{});
-        }, "Resuming Coroutine"}, milliSeconds);
+                           ExecTask_(task, true);
+                           handler(boost::system::error_code{});
+                       }, "Resuming Coroutine"}, milliSeconds);
 
         return result.get();
+#endif
     }
 
     /*! Returns the asio io-service */

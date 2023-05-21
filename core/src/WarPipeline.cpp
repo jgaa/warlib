@@ -166,10 +166,10 @@ void war::Pipeline::Dispatch(task_t &&task)
     LOG_TRACE3_F_FN(log::LA_THREADS) << "Dispatching [move] task on Pipeline " <<task;
 
     if (IsPipelineThread()) {
-        ExecTask_(move(task), false);
+        ExecTask_(std::move(task), false);
     }
     else {
-        Post(move(task));
+        Post(std::move(task));
     }
 }
 
@@ -198,7 +198,7 @@ void war::Pipeline::PostWithTimer(task_t &&task,
     timer_t timer(new boost::asio::deadline_timer(*io_context_));
     timer->expires_from_now(boost::posix_time::milliseconds(milliSeconds));
     timer->async_wait(bind(&war::Pipeline::OnTimer_, this, timer,
-                           move(task), placeholders::_1));
+                           std::move(task), placeholders::_1));
 }
 
 void war::Pipeline::Close()
