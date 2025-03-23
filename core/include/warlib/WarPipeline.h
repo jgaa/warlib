@@ -68,7 +68,6 @@ public:
 
     template <typename Token>
     auto Post(const task_t& task, Token&& token) {
-#if BOOST_VERSION >= 107000
     return boost::asio::async_compose<Token, void(boost::system::error_code e)>
         ([this, &task](auto& self) mutable {
             boost::asio::post(io_context_->get_executor(), [this, self=std::move(self), task=std::move(task)]() mutable {
@@ -76,18 +75,6 @@ public:
                 self.complete({});
             });
         }, token, io_context_->get_executor());
-#else
-    typename boost::asio::handler_type<Token, void(boost::system::error_code)>::type
-                 handler(std::forward<Token>(token));
-
-    boost::asio::async_result<decltype (handler)> result (handler);
-    Post({[this, task, handler]() mutable {
-              ExecTask_(task, false);
-              handler(boost::system::error_code{});
-          }, "Resuming Coroutine"});
-
-    return result.get ();
-#endif
     }
 
     /*! Post a task with a future
@@ -211,7 +198,7 @@ private:
     void AddingTask();
 
     std::unique_ptr<io_context_t> io_context_;
-    std::unique_ptr<boost::asio::io_context::work> work_;
+    std::unique_ptr<boost::asio::executor_work_guard<boost::asio::io_context::executor_type>> work_guard_;
     std::unique_ptr<std::thread> thread_;
     const std::string name_;
     std::atomic<bool> closed_;

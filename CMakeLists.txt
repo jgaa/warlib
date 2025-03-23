@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.6)
-project (warlib VERSION 2.2 LANGUAGES CXX)
+project (warlib VERSION 2.3 LANGUAGES CXX)
 
 set (WARLIB_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+
+option(BOOST_USE_STATIC_LIBS "Link boost libraries statically" ON)
 
 if (NOT DEFINED WITH_APIDOC)
     option(WITH_APIDOC "Generate Doxygen documentation")
@@ -10,9 +12,17 @@ endif()
 if (NOT DEFINED WAR_WITH_UNIT_TESTS)
     option(WAR_WITH_UNIT_TESTS "Enable Unit Testing" ON)
     if (NOT DEFINED WAR_AUTORUN_UNIT_TESTS)
-        option(WAR_AUTORUN_UNIT_TESTS "Run unit tests during build" ON)
+        option(WAR_AUTORUN_UNIT_TESTS "Run unit tests during build" OFF)
     endif()
 endif()
+
+if (BOOST_USE_STATIC_LIBS)
+    message("Using static boost libraries")
+    set(Boost_USE_STATIC_LIBS ON CACHE INTERNAL "")
+else()
+    set(Boost_USE_STATIC_LIBS OFF CACHE INTERNAL "")
+endif()
+
 
 if(NOT DEFINED WAR_BOOST_VERSION)
     set(WAR_BOOST_VERSION 1.65)
@@ -34,7 +44,7 @@ include(cmake_scripts/add_and_run_test.cmake)
 find_package( Threads )
 
 # Include Boost as an imported target
-find_package(Boost ${WAR_BOOST_VERSION} REQUIRED COMPONENTS
+find_package(Boost ${WAR_BOOST_VERSION} REQUIRED MODULE COMPONENTS
     system
     program_options
     filesystem

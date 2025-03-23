@@ -6,6 +6,20 @@ set(ACTUAL_SOURCES
     src/ostream_operators.cpp
     src/WarThreadpool.cpp
     src/WarPipeline.cpp
+    include/warlib/asio.h
+    include/warlib/basics.h
+    include/warlib/boost_ptree_helper.h
+    include/warlib/debug_helper.h
+    include/warlib/error_handling.h
+    include/warlib/filecheck.h
+    include/warlib/helper.h
+    include/warlib/impl.h
+    include/warlib/transaction.h
+    include/warlib/uuid.h
+    include/warlib/WarCleanUp.h
+    include/warlib/WarLog.h
+    include/warlib/WarPipeline.h
+    include/warlib/WarThreadpool.h
     )
 
 if (WIN32)

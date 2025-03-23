@@ -82,7 +82,7 @@ void war::Pipeline::Run(my_sync_t & sync, const int pinTo)
 
     try {
         debug::SetThreadName(name_);
-        work_ = make_unique<boost::asio::io_context::work>(*io_context_);
+        work_guard_ = make_unique<boost::asio::executor_work_guard<boost::asio::io_context::executor_type>>(boost::asio::make_work_guard(*io_context_));
     }
     catch (...) {
         LOG_ERROR_FN << "Caught exception! Aborting this operation!";
@@ -119,7 +119,7 @@ void war::Pipeline::Post(task_t &&task)
         << task;
 
     AddingTask();
-    io_context_->post(bind(&war::Pipeline::ExecTask_, this, task, true, true));
+    boost::asio::post(*io_context_, bind(&war::Pipeline::ExecTask_, this, task, true, true));
 }
 
 void war::Pipeline::Post(const task_t &task)
@@ -211,11 +211,11 @@ void war::Pipeline::Close()
     if (io_context_) {
         LOG_TRACE1_F_FN(log::LA_THREADS) << "Posting Close on Pipeline "
             << log::Esc(name_);
-        io_context_->post([this] {
+        boost::asio::post(*io_context_, [this] {
             if (!closed_) {
                 LOG_DEBUG << "Shutting down Pipeline " << log::Esc(name_);
                 closed_ = true;
-                work_.reset();
+                work_guard_.reset();
                 io_context_->stop();
                 LOG_DEBUG << "Finisheed shutting down Pipeline "
                     << log::Esc(name_);
