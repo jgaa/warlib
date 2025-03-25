@@ -61,7 +61,7 @@ STARTCASE(Test_Coroutine)
         }, "Post"}, yield);
 
         LOG_NOTICE << "Posting async wait.";
-    });
+    }, boost::asio::detached);
     pipeline->WaitUntilClosed();
 } ENDCASE
 
