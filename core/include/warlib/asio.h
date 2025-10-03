@@ -7,7 +7,7 @@
 namespace war {
 
 using io_context_t = boost::asio::io_context;
-using timer_t = std::shared_ptr<boost::asio::deadline_timer>;
+using timer_t = std::shared_ptr<boost::asio::steady_timer>;
 using resolver_t = std::shared_ptr<boost::asio::ip::tcp::resolver>;
 }
 

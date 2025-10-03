@@ -195,8 +195,8 @@ void war::Pipeline::PostWithTimer(task_t &&task,
         << " on Pipeline " << log::Esc(name_)
         << " for execution in " << milliSeconds << " milliseconds.";
 
-    timer_t timer(new boost::asio::deadline_timer(*io_context_));
-    timer->expires_from_now(boost::posix_time::milliseconds(milliSeconds));
+    timer_t timer(new boost::asio::steady_timer(*io_context_));
+    timer->expires_after(std::chrono::milliseconds(milliSeconds));
     timer->async_wait(bind(&war::Pipeline::OnTimer_, this, timer,
                            std::move(task), placeholders::_1));
 }

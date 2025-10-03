@@ -129,8 +129,8 @@ public:
 #if BOOST_VERSION >= 107000
         return boost::asio::async_compose<Token, void(boost::system::error_code e)>
             ([this, milliSeconds, &task](auto& self) mutable {
-                auto timer = std::make_shared<boost::asio::deadline_timer>(*io_context_);
-                timer->expires_from_now(boost::posix_time::milliseconds(milliSeconds));
+                auto timer = std::make_shared<boost::asio::steady_timer>(*io_context_);
+                timer->expires_after(std::chrono::milliseconds(milliSeconds));
                 timer->async_wait([this, timer, task=std::move(task), self=std::move(self)](boost::system::error_code ec) mutable {
                     OnTimer_({}, task, ec);
                     self.complete(ec);

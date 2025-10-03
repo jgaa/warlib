@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project (warlib VERSION 2.3 LANGUAGES CXX)
+project (warlib VERSION 2.4 LANGUAGES CXX)
 
 set (WARLIB_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
@@ -45,7 +45,6 @@ find_package( Threads )
 
 # Include Boost as an imported target
 find_package(Boost ${WAR_BOOST_VERSION} REQUIRED MODULE COMPONENTS
-    system
     program_options
     filesystem
     date_time
